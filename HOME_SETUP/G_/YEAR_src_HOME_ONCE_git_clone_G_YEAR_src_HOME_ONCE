@@ -1,0 +1,15 @@
+
+echo "
+	This puts it in a sub-sub-dir which is safe but confusing
+	Move up a layer _ONCE to ~G/YEAR_src_HOME/
+	create links
+	~/HOME -> G/YEAR_src_HOME/
+	~/bin1 -> HOME/bin1/ 
+	copy files
+	~/.exrc
+	~/.profile
+	~/.bashrc
+"
+set -x
+ask_do \
+git clone https://github.com/gps67/YEAR_src_HOME/

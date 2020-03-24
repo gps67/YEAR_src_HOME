@@ -1,0 +1,51 @@
+#!/bin/bash
+
+. ~/.bashrc
+
+export EDITOR=vi
+
+YYYY=`date +%Y`
+
+D1=/usr/local/bin/a/b/c
+D1=/nfs/md7/GPS
+D1=/nfs/md7/GPS/libs_apps/src
+D1=/nfs/md7/AIR/src_relay/src
+D1=/home/athome/G/ftp_2010_
+D1=/media/X3/2011/src/libs_apps
+D1=/home/gps/YEAR/src/libs_apps
+[ -d $D1/ ] || D1=`dirname $D1`
+[ -d $D1/ ] || D1=`dirname $D1`
+[ -d $D1/ ] || D1=`dirname $D1`
+[ -d $D1/ ] || D1=`dirname $D1`
+
+D1=${1:-$D1}
+# no no # [ -d YEAR ] || cd /nfs/NAS2/
+[ -d YEAR ] && cd YEAR \
+|| \
+[ -d $YYYY/ ] && cd $YYYY \
+|| \
+[ -d G ] && cd G \
+#
+D2=${2:-`pwd`}
+
+cd 
+
+get_auth()
+{
+ echo \
+	xauth add $(xauth -f ~gps/.Xauthority list | tail -1)
+}
+
+FGBG="-fg black -bg white" # RASH multiword
+id | grep root && FGBG="-fg green -bg black" # RASH multiword
+id | grep root && get_auth
+set -x
+# when xterm gets HUGE font - 51 lines on screen under xfce
+WW=80
+HH=51
+HH=45
+xterm  $FGBG -geometry ${WW}x${HH} -e mc $D1 $D2 &
+sleep 2
+
+# sleep 5
+# env | grep SSH_CONNECTION && sleep 40
