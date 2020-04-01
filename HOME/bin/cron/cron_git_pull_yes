@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cd /home/gps/YEAR/FTP_YEAR/
+yes | ./get_stuff.js \
+>> /tmp/get_stuff_yes.log \
+2>&1 \
+#

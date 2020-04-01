@@ -1,0 +1,23 @@
+. fns_ASKS
+# set -x
+f0=/root/bin/"$1"
+f0=~gps/bin/"$1"
+f0=$HOME/bin/"$1"
+f0=$HOME/bin_NFS/"$1"
+f=`type -p "$1"` || f="$f0"
+if file "$f" | grep -q ELF
+then
+	f="$f0"
+fi
+[ -f $f ] || f="$f0"
+################################################
+vi $f
+################################################
+
+
+[ -f $f ] && [ -x $f ] || chmod 755 $f
+PATH=$PATH:/home/gps/bin_unreached
+
+# now run the command ?
+shift
+[ -f $f ] && [ -x $f ] && ask_do $f "$@"

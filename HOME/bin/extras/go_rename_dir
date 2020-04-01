@@ -1,0 +1,69 @@
+#! /bin/bash
+# go_rename_dir
+
+. fns_FAIL
+
+function FAIL_FAILED()
+{
+	FAIL FAILED "$@" 
+}
+
+this_dir=`pwd -P`
+D0=`dirname $this_dir`
+d1=`basename $this_dir`
+
+function expr_NAME_year_mm_dd()
+{
+	expr match "$1" '\(.*\)[-_]20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+}
+
+function expr_NAME_year_mm_dd_MORE()
+{
+	expr match "$1" '\(.*\)[-_]20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+
+	# we already permit extra _MORE on rhs
+	# we dont yet get_substr, could do that too
+}
+
+function expect_NAME_year_mm_dd() # TEST + action_on_FAIL
+{
+	local d1=$1 # ARG is d1 is NAME_DATA 
+	if name=`expr_NAME_year_mm_dd $d1` # TEST + action_on_FAIL
+	then
+		: OK
+	else
+		expected_NAME_year_mm_dd $d1 # vectored complaint
+		exit 1
+		return 22
+	fi
+	return 0
+}
+
+function expected_NAME_year_mm_dd() # vectored complaint
+{
+	FAIL "expected name-2000-12-31 got $1"
+	exit 22
+	return 22
+}
+
+function date_NAME_year_mm_dd()
+{
+	date "+$1-%Y-%m-%d"
+}
+
+expect_NAME_year_mm_dd $d1 || FAIL_FAILED
+# APPLY guess to $d1 else FAIL_FAILED
+
+cd $D0
+d2=`date_NAME_year_mm_dd $name`
+d2="${d2}_EDITS"
+pwd
+if [ "$d1" = "$d2" ]
+then
+	echo SAME
+	[ -d $name/. ] || ln -sf $d2 $name
+else
+	set -x
+	ask_do mv $d1 $d2 # fool # try not to run this by accident #
+	ln -sf $d2 $name # leaves a scar, or cover, keeps original year-mm-dd
+fi

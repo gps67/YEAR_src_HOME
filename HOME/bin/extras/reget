@@ -1,0 +1,183 @@
+#!/usr/bin/env tclsh
+#!/usr/bin/env tclsh8.4
+#!/usr/bin/env tclsh8.3
+
+# reget ftp://host/dir/file
+# becomes: /home/me/ftp_9912/host/dir/file
+#
+# dir cannot be the root dir 
+# user is not taken from url (anonymous)
+# there is no ftp proxy option
+# each user must edit email address, etc
+#
+# file mtime is set correctly!
+# ._ls_ being added
+
+# lappend auto_path $tcl_library/tcllib1.2/
+package require ftp 
+
+
+proc fmt1 {sz} {
+	format "%7.3f" [expr $sz/(1024.0*1024.0)]
+}
+
+proc got_file_size {sz1 sz} {
+	set ::File_Size_1 $sz1
+	set ::File_Size_B $sz
+	set ::File_Size_M [fmt1 $sz]
+}
+got_file_size 0 1024
+proc progress1 {sz} {
+	incr sz $::File_Size_1
+	set M1 [fmt1 $sz]
+	set PC [format "%5.1f" [expr 100.0*$sz/$::File_Size_B]]
+	puts -nonewline stderr "\rProgress $M1 M  $PC% of $::File_Size_M M "
+}
+
+proc calls1 {args} {
+	puts stderr "CALL: $args"
+	set ret [eval $args]
+	puts stderr "RESP: $ret"
+	return $ret
+}
+
+proc calls {args} {
+	if 1 {
+		puts stderr "CALL: $args"
+		set ret [eval $args]
+		puts stderr "RESP: $ret"
+		return $ret
+	}
+	puts stderr "CALL: $args"
+	eval $args
+}
+
+proc main {argv} {
+	# /export/home/./ftp_9909/...
+	set dir_rooted /export/home
+	set dir_rooted /home/gps/2k04/ibm/big
+	set dir_rooted /home/gps
+	# not yet decoded from URL:
+	#	url_user
+	#	url_pass
+	set url_user anonymous 
+	set url_pass gps@trix.dircon.co.uk
+	set url_pass lists@Information-Cascade.co.uk
+	# decode URL into
+	#	url_host
+	#	url_dir
+	#	url_file	
+	#
+	set url [lindex $argv 0]
+	set e {^ftp://([^/]+)(/.*)/([^/]+)$}
+	if ![regexp $e $url all url_host url_dir url_file] {
+		puts stderr "Error in URL: $url"
+		puts stderr "Expected: $e"
+		error "bad url $e"
+		return 0
+	}
+
+	# time picks a dir
+	# $yy  $mm
+	# $yy2 $mm2
+	set t1 [clock seconds]
+	set yy [clock format $t1 -format "%y"]
+	set mm [clock format $t1 -format "%m"]
+	set year [clock format $t1 -format "%Y"]
+	set yy2 $yy
+	# allow reget to move an attempt from last month
+	set mm2 $mm
+	# problems with mm2 being 08 or 09  - not valid octal
+	switch $mm2 {
+	08 { set mm2 8}
+	09 { set mm2 9}
+	}
+	# strips leading zero - if OK 
+	incr mm2 -1
+	if {$mm2 < 1} {
+		set mm2 12
+		set yy2 [expr $yy2 - 1]
+		if {$yy2<0} {incr yy2 100}
+	}
+	# want 2 digit (but dont forget 08 09 are not valid ints)
+	if {$mm2<=9} {set mm2 0$mm2}
+
+	set ftp_yymm1 ftp_${yy}${mm}
+	set ftp_yymm2 ftp_${yy2}${mm2}
+
+	# search for half completed file in these dirs ...
+
+	set dir1 $dir_rooted/$year/ftp/$ftp_yymm1/$url_host/$url_dir
+	set dir2 $dir_rooted/$year/ftp/$ftp_yymm2/$url_host/$url_dir
+	set dir3 $dir_rooted/$year/ftp/$ftp_yymm1
+	set dir4 $dir_rooted/$year/ftp/$ftp_yymm2
+	
+	# the preferred location 
+	set file_pref $dir1/$url_file
+	catch { file mkdir $dir1 }
+
+	set file_found {}
+	foreach dir [list $dir1 $dir2 $dir3 $dir4] {
+		set file $dir/$url_file
+		if [file exists $file] {
+			set file_found $file
+			break
+		}
+	}
+	# file not found, select preferred file location
+	if {$file_found==""} {
+		set file_found $file_pref
+	}
+	# file found somewhere other than file_pref, move file
+	if {$file_found!=$file_pref} {
+		file mkdir $dir1
+		file rename $file_found $file_pref
+		set file_found $file_pref
+	}
+
+# return
+	# open the connection, ftp login, binary mode
+#	set conn [calls ftp::Open $url_host $url_user $url_pass]
+#	set conn [calls ftp::Open $url_host $url_user $url_pass -mode passive]
+	set conn [calls ftp::Open $url_host $url_user $url_pass -progress progress1 -mode passive]
+	if {$conn==-1} {
+		return
+	}
+	
+	# server MUST allow cd, and local ls (a few dont)
+	calls ftp::Cd $conn $url_dir
+
+ if 1 {
+	set ls_text [calls ftp::List $conn] 
+	file mkdir $dir1
+	set ls_file $dir1/._ls_
+	set ls_fd [open $ls_file w]
+	foreach line $ls_text {
+		puts $ls_fd $line
+		puts        $line
+	}
+	close $ls_fd
+ }
+
+	# Get filesize for progres
+	set sz1 0
+	if {[file exists $file_pref]} {
+		set sz1 [file size $file_pref]
+	}
+	got_file_size $sz1 [calls ftp::FileSize $conn $url_file]
+
+	# continue fetch on file (ok if 100%)
+	calls ftp::Reget $conn $url_file $file_pref 
+
+	# get mtime of file
+set t [	calls ftp::ModTime $conn $url_file ]
+
+	# set mtime of file
+# touch is UNIX specific ?? SOL/HP ??
+	set timestr [clock format $t -format "%Y%m%d%H%M.%S" ]
+	# set timestr [clock format $t -format "%m%d%H%M%Y.%S" ]
+	puts "time format $timestr"
+	exec touch -mc -t $timestr $file_pref
+}
+
+main $argv

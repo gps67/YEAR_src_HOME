@@ -1,0 +1,38 @@
+# go_upload_tarball
+
+. fn_cd_or_FAIL
+
+d23=baks
+
+D0=`dirname $(pwd -P)`
+d1=`basename $(pwd -P)`
+cd_or_FAIL $D0
+[ -d ../tars/. ] && cd ../tars/.
+[ -d tars ] && cd ./tars
+pwd
+
+if : false :
+then
+	tar_file=$d1.tgz
+	Z=-z
+else
+	tar_file=$d1.tar.bz2
+	Z=-I
+fi
+
+[ -f ${tar_file}.bf ] && tar_file=${tar_file}.bf
+
+# delete site
+D2=~/2000/SITE/www.information-cascade.co.uk/
+
+D2=~/YEAR/SITE/www.gps.talktalk.net/
+D3=$D2/$d23
+dir_must_exist $D3
+echo -n "# CWD # "
+pwd
+cp -p $tar_file $D3
+cd_or_FAIL $D2 || exit 
+PATH=/home/gps/bin_priv:$PATH
+putter_tt $d23/$tar_file || banner -w 40 NO
+
+

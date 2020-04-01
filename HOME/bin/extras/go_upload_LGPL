@@ -1,0 +1,33 @@
+# go_upload_tarball
+
+d23=LGPL
+
+D0=`dirname $(pwd -P)`
+d1=`basename $(pwd -P)`
+cd $D0
+[ -d ../tars/. ] && cd ../tars/.
+[ -d tars ] && cd ./tars
+pwd
+
+if : false :
+then
+	tar_file=$d1.tgz
+	Z=-z
+else
+	tar_file=$d1.tar.bz2
+	Z=-I
+fi
+
+
+
+
+
+D2=~/YEAR/SITE/www.gps.talktalk.net
+D3=$D2/$d23
+[ -d $D3 ] || exit 1
+cp -p $tar_file $D3
+cd $D2 || exit1
+PATH=/home/gps/bin_priv:$PATH
+putter_tt $d23/$tar_file || banner -w 40 No
+
+

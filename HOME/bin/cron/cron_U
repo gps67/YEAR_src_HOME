@@ -1,0 +1,36 @@
+#!/bin/bash
+
+(
+.  /home/gps/bin/cron/cron_env
+
+. fns_ROOT
+rerun_as_root "$@"
+
+show_reboot_message()
+{
+	if [ -f /var/run/reboot-required ]; then
+		cat /var/run/reboot-required
+	fi
+}
+
+show_reboot_message
+set -x
+
+apt update
+apt upgrade -y 
+apt autoremove -y
+apt autoclean
+
+
+# /etc/update-motd.d/
+# 98-reboot-required
+
+set +x
+show_reboot_message
+
+case "$1"
+in
+	0|6) xxx "$1"
+esac
+
+) 2>&1 >> /tmp/cron_U.log

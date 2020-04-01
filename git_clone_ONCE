@@ -1,0 +1,4 @@
+
+set -x
+ask_do \
+git clone https://github.com/gps67/YEAR_src_HOME/

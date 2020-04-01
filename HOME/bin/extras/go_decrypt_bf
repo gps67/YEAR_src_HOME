@@ -1,0 +1,4 @@
+#!/bin/bash
+. fns_VARS
+var_pfx PATH $HOME/bin_priv
+PRIV_go_decrypt_bf "$@"

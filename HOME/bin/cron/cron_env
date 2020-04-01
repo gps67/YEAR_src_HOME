@@ -1,0 +1,10 @@
+
+PATH=$PATH:/home/gps/bin
+
+. fns_FAIL
+. fns_DATE
+. fns_ROOT
+. fns_VARS
+
+
+

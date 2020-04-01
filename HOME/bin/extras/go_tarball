@@ -1,0 +1,99 @@
+#!/bin/bash
+# go_tarball
+
+this_dir=`pwd -P`
+D0=`dirname $this_dir`
+d1=`basename $this_dir`
+x1=$d1/.tar_excl_list
+
+function expr_NAME_year_mm_dd()
+{
+	expr match "$1" '\(.*\)[-_]20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+}
+
+function expected_NAME_year_mm_dd()
+{
+	echo "expected name-2000-12-31 got $1"
+	return 22
+}
+
+if name=`expr_NAME_year_mm_dd $d1`
+then
+	: OK
+	# d1="$name"
+else
+	expected_NAME_year_mm_dd $d1
+	exit 1
+fi
+
+
+# SKIPPED # rm -f *.pyc
+
+cd $D0
+pwd
+
+if : false :
+then
+	tar_file=$d1.tgz
+	Z=-z
+else
+	tar_file=$d1.tar.bz2
+	Z=-I
+fi
+
+if [ -d tars/. ]
+then
+	tar_file=tars/$tar_file
+elif [ -d ../tars/. ]
+then
+	tar_file=../tars/$tar_file
+fi
+
+tmp_file=$d1.tmp
+
+[ -f $x1 ] || touch $x1
+
+# .exe  - REMAINS to distribute WIN32, .zip files ??
+# .exec - used by tests for .exe
+# .dump - used by ??? for objdump
+
+# set -x
+
+# this list would be universally useful
+# ALSO IT DID NOT WORK !!
+# input errors, output error, exit 0
+if tar -v $Z \
+--exclude='*.swp' \
+--exclude='*.so' \
+--exclude='*.o' \
+--exclude='*.a' \
+--exclude='*.pyc' \
+--exclude='*.class' \
+--exclude='*.exec' \
+--exclude='*.dump' \
+--exclude='.fa' \
+--exclude='.fa?' \
+--exclude='.fb' \
+--exclude='fa' \
+--exclude='fb' \
+--exclude='.bzr' \
+--exclude='a.out' \
+--exclude-from=$x1 \
+--totals \
+-cf $tmp_file \
+$name $d1
+then
+	mv -f $tmp_file $tar_file
+	# du -sk $tar_file
+	du -sh $tar_file
+else
+	E=$? # attempt to get exit code
+	echo " PWD `pwd -P`"
+	echo " PWD `pwd -L`"
+	echo "# Sometimes NFS fails during close(fd) or flush or other"
+	echo "# or chmod fails, but 75% of the file is there"
+	echo "# $tmp_file"
+	# perror "$E" "tar failed with exit code _"
+	FAIL "$E" "tar failed with exit code _"
+	exit $E
+fi
