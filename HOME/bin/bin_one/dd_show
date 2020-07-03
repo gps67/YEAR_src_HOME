@@ -1,0 +1,10 @@
+ps -C dd
+echo -n "Enter dd PID _ "
+read P
+. /home/gps/.profile
+while true
+do
+	ask_do kill -USR1 $P
+	sleep 1
+	# ask_do watch -n 60 kill -USR1 $P
+done

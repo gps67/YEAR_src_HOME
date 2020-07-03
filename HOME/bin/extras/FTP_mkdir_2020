@@ -1,12 +1,10 @@
-#/bin/bash 
-
 . fns_var_add # ~/bin_LGX # because PATH_TOOL is a binary
 var_add PATH \
+	/home/gps/2017/bin_NFS/HOME_bin \
+	/home/gps/2018/bin_NFS/HOME_bin \
 	/home/gps/bin_NFS_down/HOME/bin \
 	/home/gps/bin_NFS_down \
 #
-#	/home/gps/2017/bin_NFS/HOME_bin \
-#	/home/gps/2018/bin_NFS/HOME_bin \
 
 . fns_FAIL
 . fns_DIRS
@@ -15,12 +13,9 @@ var_add PATH \
 
 # can change date -d if required #
 
-	fn_DATE_get_VARS 2020-01-15 # _get_ new values means _set_ new_values
-	# fn_DATE_show_VARS 2020-01-15 # set date from ARGS
-	# fn_DATE_show_VARS 
-	echo "# DATE # $DATE_year_mm_dd"
-	fn_DATE_show_VARS DATE_year_mm_dd
-# exit
+#	fn_DATE_get_VARS 2020-01-15
+	fn_DATE_show_VARS 
+#	fn_DATE_show_VARS 2020-01-15
 
 # set -x
 FTP_YEAR_MM_Jan="FTP_${DATE_YEAR}_${DATE_MM}_${DATE_Jan}"
@@ -119,56 +114,4 @@ ln_s_ask $FTP_YEAR/FTP_ ../FTP_
 ln_s_ask $FTP_YEAR/ $HOME/YEAR/FTP_YEAR
 ln_s_ask YEAR/FTP_/ ${HOME}/FTP_
 ln_s_ask YEAR/src/SCRATCH_SCRIPTS/in_BASH/bin_NFS/ /home/gps/bin_NFS
-# ln_s_ask /nfs/BAX/ $HOME/BAX
-# ln_s_ask /nfs/BAX/ $HOME/YEAR/BAX
-
-	# ERRM .. OK ...
-	# EDIT in last years dirs
-	# 2019
-
-CURR=${DATE_YEAR} # not "/YEAR/"
-PREV=2019
-NEXT=2021
-cd_or_FAIL $HOME/2019/
-cd_or_FAIL /tmp
-cd_or_FAIL $HOME
-
-LIST1="
-	ADMIN
-	AUDIO
-	BAX
-	BOUGHT
-	FTP
-	HOME
-	PHOTOS
-	REC
-	SCANS
-	YT
-	src_build
-	src
-
-"
-for name in $LIST1
-do
-	name_YEAR=${name}_${DATE_YEAR}
-	name_PREV=${name}_${PREV}
-	D2=$DATE_YEAR/${name_YEAR}/
-	if [ ! -d "$D2" ]
-	then
-		ask_do mkdir "$D2"
-	fi
-	# ~/YEAR/NAME => NAME_2020
-	ln_s_ask "${name_YEAR}/" "${HOME}/YEAR/${name}"
-	# 2019/NAME_2020 => 2020/NAME_2020/
-	ln_s_ask "${CURR}/${name_YEAR}/" "${PREV}/${name_YEAR}"
-	# 2020/NAME_2019 => 2019/NAME_2019/
-	ln_s_ask "${PREV}/${name_PREV}/" "${CURR}/${name_PREV}"
-	# ~/NAME => YEAR/NAME
-	rm_ln_s_ask "YEAR/${name}/" "${HOME}/${name}"
-
-done
-
-	ln_s_ask "${HOME}/${PREV}/" "${HOME}/${CURR}/${PREV}"
-	ln_s_ask "${HOME}/${CURR}/" "${HOME}/${PREV}/${CURR}"
-	
 
