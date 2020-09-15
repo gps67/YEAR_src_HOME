@@ -23,8 +23,19 @@ fn_is_decimal()
 	expr match "$1" '^[0-9]*$' > /dev/null
 }
 
-fn_FAIL() {
+SLEEP_FAIL() {
+
 	local errn=22
+	local sleeps=22
+
+	if fn_is_decimal "$1"
+	then
+		sleeps="$1"
+		shift
+	else
+		echo >&2 "# WARN # you should pass sleeps to FAIL as second arg"
+	fi
+
 	if fn_is_decimal "$1"
 	then
 		errn="$1"
@@ -32,9 +43,39 @@ fn_FAIL() {
 	else
 		echo >&2 "# WARN # you should pass $? to FAIL as first arg"
 	fi
+
+	fn_FAIL_TEXT $errn "$@" # print the messages
+
+	echo >&2 "# SLEEP $sleeps"
+	sleep $sleeps
+	exit $errn
+}
+
+fn_FAIL_TEXT() {
+	local errn=$? # might be 0, force to actual error number 
+	if fn_is_decimal "$1"
+	then
+		errn="$1"
+		shift
+	else
+		if [ $errn == 0 ] 
+		then
+			echo >&2 "# WARN # you should pass $? to FAIL as first arg"
+			errn=22
+			echo >&2 "# WARN # not errn 0 # errn $errn"
+		else
+			echo >&2 "# NOTE # you should pass $? to FAIL as first arg"
+			echo >&2 "# NOTE # used \$?"
+		fi
+	fi
 	echo -n >&2 "# FAIL # $errn # $* # "
 	perror $errn
-	set -x
+	return $errn
+}
+
+fn_FAIL() {
+	local errn=fn_FAIL_TEXT "$@"
+
 	exit $errn
 	# $1 should be errno - or should errno be errno ?
 	echo >&2 "# FAIL # FAIL SHOULD HAVE EXITED "
@@ -54,15 +95,18 @@ FAIL() {
 }
 
 fn_WARN() {
-	local errn=22
+	local errn=$?
 	if fn_is_decimal "$1"
 	then
 		errn="$1"
 		shift
 	else
-		echo >&2 "# WARN # you should pass $? to WARN as first arg"
+		echo >&2 "# WARN # you should pass $errn \$? to WARN as first arg"
 	fi
 	echo -n >&2 "# WARN # $errn # $* # "
 	return 1
 }
 
+fn_PASS() {
+	echo -n >&2 "# PASS # ok # $* # "
+}

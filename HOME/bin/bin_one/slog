@@ -1,0 +1,12 @@
+cd /
+sudo tail -n 30 -f \
+/var/log/messages \
+/var/log/auth.log \
+/var/log/debug \
+/var/log/daemon.log \
+/var/log/syslog \
+#
+
+exit
+
+/var/log/kern.log \

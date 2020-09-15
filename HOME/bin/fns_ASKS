@@ -8,6 +8,7 @@ ask_do_fn()
 		t=$?
 		if [ $t != 0 ]
 		then
+			echo >&2 "# pwd # `pwd`"
 			fn_WARN $t "$@"
 	#		echo >&2 -ne "## FAIL-WARN $t ## "
 	#		PATH=$PATH:/tools/2000/mysql/bin # perror

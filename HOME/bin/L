@@ -13,6 +13,10 @@ D1=/nfs/md7/AIR/src_relay/src
 D1=/home/athome/G/ftp_2010_
 D1=/media/X3/2011/src/libs_apps
 D1=/home/gps/YEAR/src/libs_apps
+if id | grep root >/dev/null
+then
+	D1=/home/gps/YEAR/ADMIN
+fi
 [ -d $D1/ ] || D1=`dirname $D1`
 [ -d $D1/ ] || D1=`dirname $D1`
 [ -d $D1/ ] || D1=`dirname $D1`
@@ -39,12 +43,15 @@ get_auth()
 FGBG="-fg black -bg white" # RASH multiword
 id | grep root && FGBG="-fg green -bg black" # RASH multiword
 id | grep root && get_auth
-set -x
 # when xterm gets HUGE font - 51 lines on screen under xfce
 WW=80
 HH=51
 HH=45
-xterm  $FGBG -geometry ${WW}x${HH} -e mc $D1 $D2 &
+FONTS="-fa Monospace -fs 14"
+# ssh from elsewhere # use smaller HH 
+[ -z "$SSH_CLIENT" ] || HH=35
+set -x
+xterm  $FGBG $FONTS -geometry ${WW}x${HH} -e mc $D1 $D2 &
 sleep 2
 
 # sleep 5
