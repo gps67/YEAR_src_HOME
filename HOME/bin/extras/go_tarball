@@ -85,6 +85,7 @@ $name $d1
 then
 	mv -f $tmp_file $tar_file
 	# du -sk $tar_file
+	pwd
 	du -sh $tar_file
 else
 	E=$? # attempt to get exit code

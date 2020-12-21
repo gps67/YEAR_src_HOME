@@ -74,11 +74,12 @@ fn_FAIL_TEXT() {
 }
 
 fn_FAIL() {
-	local errn=fn_FAIL_TEXT "$@"
-
+	fn_FAIL_TEXT "$@"
+	local errn="$?"
+# OK
+#	echo "## fn_FAIL ## errn is $errn"
+	sleep 2
 	exit $errn
-	# $1 should be errno - or should errno be errno ?
-	echo >&2 "# FAIL # FAIL SHOULD HAVE EXITED "
 	sleep 2
 	return 1
 }
