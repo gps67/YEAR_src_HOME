@@ -74,7 +74,8 @@ fn_FAIL_TEXT() {
 }
 
 fn_FAIL() {
-	local errn=fn_FAIL_TEXT "$@"
+	fn_FAIL_TEXT "$@"
+	local errn="$?"
 
 	exit $errn
 	# $1 should be errno - or should errno be errno ?

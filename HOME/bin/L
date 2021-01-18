@@ -6,13 +6,35 @@ export EDITOR=vi
 
 YYYY=`date +%Y`
 
+D2=${2:-`pwd`}
+
 D1=/usr/local/bin/a/b/c
 D1=/nfs/md7/GPS
 D1=/nfs/md7/GPS/libs_apps/src
 D1=/nfs/md7/AIR/src_relay/src
 D1=/home/athome/G/ftp_2010_
 D1=/media/X3/2011/src/libs_apps
-D1=/home/gps/YEAR/src/libs_apps
+D1=/home/gps/YEAR/src/PLAY/libs_apps
+
+# actually $YYYY/ might be better, but 2020 does exist on JAN 1st
+if [ ! -d $HOME/2020/ ]
+then
+	D1=$HOME/G/nfs/nfs_scripts_2
+fi
+	if [ "$D2" == "$HOME" ]
+	then
+
+		[ -d YEAR ] && cd YEAR 
+		[ -d $YYYY/ ] && cd $YYYY 
+		[ -d src/ ] && cd src 
+		# above never happens when HOME/YEAR not mounted
+		[ -d G ] && cd G 
+		[ -d PVR ] && cd PVR 
+		#
+		D2=${2:-`pwd`}
+
+	fi
+
 if id | grep root >/dev/null
 then
 	D1=/home/gps/YEAR/ADMIN
@@ -23,14 +45,23 @@ fi
 [ -d $D1/ ] || D1=`dirname $D1`
 
 D1=${1:-$D1}
+
+# errm D2 is as PWD was ...
+# these || && dont work quite like I thought
+# they do go on the the next, was YEAR/G/ now YEAR/src/
+# except now not - back to YEAR/G/ !!
+#
 # no no # [ -d YEAR ] || cd /nfs/NAS2/
 [ -d YEAR ] && cd YEAR \
 || \
 [ -d $YYYY/ ] && cd $YYYY \
 || \
+[ -d src/ ] && cd src \
+|| \
 [ -d G ] && cd G \
 #
-D2=${2:-`pwd`}
+
+echo "## D2 ## $D2"
 
 cd 
 

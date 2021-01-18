@@ -89,7 +89,7 @@ OPTHERln_s_tail() {
 }
 
 ln_s_tail() {
-	[ $# -gt 2 ] || fn_FAIL 22 "ln_s_ask dst src # got $# args # $@"
+	[ $# -ge 2 ] || fn_FAIL 22 "ln_s_ask dst src # got $# args # $@"
 	local dst="$1"
 	local src="$2"
 	[ "$src" = "ask_do" ] && fn_FAIL 22 "ln_s_ask dst src # got $# args # $@ # HINT use - or . for src "
