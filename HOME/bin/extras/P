@@ -1,4 +1,0 @@
-
-VARNAME="${1:-PATH}"
-echo "--- $VARNAME ---"
-eval echo "\$${VARNAME}" | tr ':' '\012'

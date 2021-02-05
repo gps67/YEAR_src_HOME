@@ -1,0 +1,17 @@
+echo >&2 "# $0 # $* "
+echo >&2 "#   ARG1 '$1'"
+
+echo >> /tmp/gps_git_log.GIT_ASKPASS "# $0 # $* "
+
+# Username for 'https://github.com':
+# Password for 'https://%s@github.com': %s == user
+
+. fns_VARS
+var_add PATH $HOME/bin_priv
+
+# HOME/bin/ is published
+# HOME/bin_priv/ -> PRIV/bin_priv/
+# you write the following for your site
+
+PRIV_GIT_ASKPASS "$@"
+

@@ -1,0 +1,409 @@
+# set -x
+# edit $YEAR
+
+	fs_DIR0=/home/gps/G/FTP_CVS
+	fs_DIR0=/home/gps/YEAR/FTP_YEAR/FTP_CVS
+	METH_list="
+		git
+		https
+		http
+	"
+
+	SITES_proj="
+		git.gnome.org
+	"
+	SITES_user_proj="
+		github.com
+	"
+	SITES_various="
+		sourceware.org
+		git.code.sf.net
+	"
+	url_STYLE=SITE_PROJ
+	url_STYLE=SITE_USER_PROJ
+	url_STYLE=SITE_VARIOUS
+	url_STYLE=SITE_PROJ
+	url_STYLE=NAFF
+	url_METH=https
+	url_SITE=ASITE
+	url_USER=AUSER
+	url_PROJ=APROJ
+	NAME0_list="
+		$SITES_proj
+		$SITES_user_proj
+		$SITES_various
+	"
+	# or zap these
+	NAME0=github.com
+	fs_DIR1="$fs_DIR0/$NAME0"
+
+	GET_GIT_LOG1=$fs_DIR1/GET_GIT_log.txt
+
+# TODO
+# this worked
+#	git clone git://sourceware.org/git/insight.git
+# this failed 
+#	 clone https://sourceware.org/git/insight.git
+# with
+# fatal: https://sourceware.org/git/insight.git/info/refs not found: did you run git update-server-info on the server?
+
+# TODO
+# git@github.com:gps67/rant_o_matic_01a.git
+
+GET_GITE_add_to_log()
+{
+	[ -d $fs_DIR1 ] || ask_do mkdir -p $fs_DIR1
+	echo "$1" >> $GET_GIT_LOG1
+}
+
+GET_GIT_PARSE_1()
+{
+	echo >&2 PARSE_1 "$1"
+	for H in $NAME0_list
+	do
+	  if NAME1=`expr match "$1" "https://$H/\([^/]*\)/[^/]*\.git"`
+	  then
+		NAME2=`expr match "$1" "https://$H/[^/]*/\([^/]*\)\.git"`
+		NAME0="$H"
+		return
+	  fi
+	done
+	return 1
+	#
+	# stupid BASH lost $? when using it in the if
+	# so have to return 1 for it
+	#
+}
+
+GET_GIT_PARSE_2()
+{
+	echo >&2 PARSE_2 "$1"
+	for H in $NAME0_list
+	do
+	  if NAME1=`expr match "$1" "https://$H/\([^/]*\)/[^/]*$"`
+	  then
+		NAME2=`expr match "$1" "https://$H/[^/]*/\([^/]*\)$"`
+		NAME0="$H"
+		return
+	  fi
+	done
+	return 1
+}
+
+GET_GIT_PARSE_3()
+{
+	echo >&2 PARSE_3 "$1"
+	for PTN in '[^/]*'
+	do
+	  H=`expr match "$1" "https://\($PTN\)/[^/]*/[^/]*$"` || break
+	  if NAME1=`expr match "$1" "https://$H/\([^/]*\)/[^/]*$"`
+	  then
+		NAME2=`expr match "$1" "https://$H/[^/]*/\([^/]*\)$"`
+		NAME0="$H"
+		return
+	  fi
+	done
+	return 1
+}
+
+GET_GIT_PARSE_4()
+{
+	echo >&2 PARSE_4 "$1"
+	echo >&2 "# TODO https://NAME1.github.com/NAME2.git"
+	echo >&2 "# FAIL GET_GIT PARSE FAIL on '$1'"
+	return 1
+}
+
+SHOW()
+{
+	echo SHOW url_STYLE $url_STYLE
+	echo SHOW url_URL1 $url_URL1
+	echo SHOW url_METH $url_METH
+	echo SHOW url_SITE $url_SITE
+	echo SHOW url_USER $url_USER
+	echo SHOW url_PROJ $url_PROJ
+	echo SHOW url_PROJ_dir $url_PROJ_dir
+}
+
+WARN()
+{
+	t=$?
+	echo "# WARN #$t# $*"
+	SHOW
+	return $t
+}
+
+FAIL()
+{
+	t=$?
+	echo "# FAIL #$t# $*"
+	SHOW
+	exit $t
+	return 1
+}
+
+GET_GIT_PARSE()
+{
+
+if false
+then
+	if expr match "$TAIL" '.*\.git$' > /dev/null
+	then
+		:
+	else
+		echo "# adding .git"
+		t="$1.git"
+		shift
+		set "$t" "$@"
+	fi
+fi
+
+	### hate that ###
+
+	url_URL1="$1"
+
+	# method https git 
+	if S=`expr match "$1" "\([a-z]*\)://.*"`
+	then
+		url_METH=$S
+		# OK # echo "url_METH $url_METH"
+	fi
+
+	# https://hostname -eot-
+	if S=`expr match "$1" "$url_METH://\([^/]*\)$"`
+	then
+		url_SITE=$S
+		url_STYLE=NAFF
+		# OK # echo "url_SITE $url_SITE"
+		FAIL "$1 has no dir nor file part"
+		return
+	fi
+
+	# https://hostname/ -eot-
+	if S=`expr match "$1" "$url_METH://\([^/]*\)/$"`
+	then
+		url_SITE=$S
+		url_STYLE=NAFF
+		# OK # echo "url_SITE $url_SITE"
+		FAIL "$1 has no dir nor file part"
+		return
+	fi
+
+	# https://hostname/ more
+	if S=`expr match "$1" "$url_METH://\([^/]*\)/.*"`
+	then
+		url_SITE=$S
+		# OK # echo "url_SITE $url_SITE"
+	else
+		FAIL "coding error with $1" # poss http://host no /
+	fi
+
+	# https://hostname/something -eot-
+	# https://hostname/something/ -eot-
+	# https://hostname/something// -eot- never happens?
+	if S=`expr match "$1" "$url_METH://$url_SITE/\([^/]*\)/*$"`
+	then
+		url_PROJ="$S" # almost maybe poss various
+		url_STYLE=SITE_PROJ # almost maybe poss various
+		if S=`expr match "$url_PROJ" "\([^/]*\).git$"`
+		then
+			url_PROJ="$S" # basename
+			url_PROJ_git="$S.git" # fullname
+			url_PROJ_dir="$S" # basename
+		else
+			url_PROJ="$url_PROJ" # basename
+			url_PROJ_git="$url_PROJ.git" # fullname
+			url_PROJ_git="$url_PROJ" # fullname
+			url_PROJ_dir="$url_PROJ" # basename
+		fi
+		return
+	fi
+
+	# grab something
+	# https://hostname/something/more -eot-
+	# https://hostname/something// -eot- never happens?
+	if S=`expr match "$1" "$url_METH://$url_SITE/\([^/]*\)/.*$"`
+	then
+		url_DIR1="$S"
+		url_USER="$S" # as if github/user/proj
+	fi
+
+	# nb RE symbols in url_DATA might backdoor
+
+	# https://hostname/username/project -eot-
+	# https://hostname/username/project/ -eot-
+	if S=`expr match "$1" "$url_METH://$url_SITE/$url_DIR1/\([^/]*\)/*$"`
+	then
+		url_PROJ="$S" # as if github/user/proj
+		url_STYLE=SITE_USER_PROJ # almost maybe poss various
+		if S=`expr match "$url_PROJ" "\([^/]*\).git$"`
+		then
+			url_PROJ="$S" # basename
+			url_PROJ_git="$S.git" # fullname
+			url_PROJ_dir="$S" # basename
+		else
+			url_PROJ="$url_PROJ" # basename
+			url_PROJ_git="$url_PROJ.git" # fullname
+			url_PROJ_git="$url_PROJ" # fullname
+			url_PROJ_dir="$url_PROJ" # basename
+		fi
+		return
+	fi
+
+	# https://hostname/username/project/ -eot-
+	if S=`expr match "$1" "$url_METH://$url_SITE/$url_DIR1/\([^/]*\)/$"`
+	then
+		url_PROJ="$S" # as if github/user/proj
+		url_STYLE=SITE_USER_PROJ # almost maybe poss various
+		FAIL CODE DOESNT SET PROJ_dir
+		echo but here
+		return
+	fi
+
+	url_DIR2="DIR2" # DIR2
+	# https://hostname/username/project/... -eot-
+	if S=`expr match "$1" "$url_METH://$url_SITE/$url_DIR1/\([^/]*\)/.*$"`
+	then
+		# zsh # echo "S=$S"
+		url_PROJ="$S" # 
+		url_DIR2="$S" # DIR2
+	else
+		url_STYLE=SITE_VARIOUS # non simple subdir tree
+		return 1
+	fi
+
+	url_END3="END3"
+	# https://hostname/username/project/END3 -eot-
+	if S=`expr match "$1" "$url_METH://$url_SITE/$url_DIR1/$url_DIR2/\([^/]*\)$"`
+	then
+		url_DIR3="$S" # DIR3
+		url_PROJ_dir="$S" # DIR3 code
+		url_STYLE=SITE_VARIOUS_azsh # git://git.code.sf.net/p/zsh/code
+		url_STYLE=SITE_USER_PROJ # also like ?
+		return
+	else
+		url_STYLE=SITE_VARIOUS # non simple subdir tree
+		return 1
+	fi
+
+	url_STYLE=SITE_VARIOUS # non simple subdir tree
+	return 1
+
+	###########################
+
+}
+
+do_pwd()
+{
+	echo -n "# PWD # "
+	pwd
+}
+
+ask_mkdir()
+{
+	do_pwd
+	ask_do mkdir "$@"
+}
+
+cd_mkdir()
+{
+	[ -d "$1" ] || mkdir "$1"
+	cd "$1" || FAIL
+	do_pwd
+}
+
+cd_or_FAIL()
+{
+	cd "$1" || FAIL cd "$1"
+	do_pwd
+}
+
+ask_do_git_clone()
+{
+	ask_do git clone --depth 1 "$@"
+}
+
+GET_GIT_fn()
+{
+	if GET_GIT_PARSE "$1"
+	then
+	:
+	else
+		FAIL
+		return 1
+	fi
+	SHOW
+	case $url_STYLE
+	in
+	NAFF)
+		FAIL
+		return 1
+	;; SITE_USER_PROJ)
+		cd_or_FAIL $fs_DIR0
+		cd_mkdir ./$url_SITE
+		cd_mkdir ./$url_USER
+		if [ -d "$url_PROJ_dir" ]
+		then
+			cd_or_FAIL "$url_PROJ_dir" || FAIL
+			ask_do git pull
+		else
+			# cd_mkdir "$url_PROJ"
+			ask_do_git_clone "$url_URL1"
+		fi
+	;; SITE_VARIOUS)
+		WARN code needed
+		FAIL code needed
+	;; SITE_VARIOUS_zsh) # git://git.code.sf.net/p/zsh/code
+		WARN code needed
+		FAIL code needed
+	;; SITE_PROJ)
+		cd_or_FAIL $fs_DIR0
+		cd_mkdir "$url_SITE"
+		if [ -d "$url_PROJ_dir" ]
+		then
+			cd_or_FAIL "$url_PROJ_dir" || FAIL
+			ask_do git pull
+		else
+			# cd_mkdir "$url_PROJ"
+			ask_do_git_clone "$url_URL1"
+		fi
+			
+	;; *)
+		FAIL
+	esac
+
+	return
+
+	# so what is the following code ###
+
+	GET_GIT_PARSE "$1" || echo hmmm
+
+	[ -d $url_SITE ] || ask_mkdir $url_SITE
+	cd ./$url_SITE || exit
+
+	[ -d $url_DIR1 ] || mkdir -p $url_DIR1
+	cd $url_DIR1 || exit
+
+	GET_GIT_PARSE "$1" || ask_do_git_clone "$1"
+	GET_GIT_PARSE "$1" || return 
+
+
+	[ -d $NAME1 ] || mkdir $NAME1
+	cd ./$NAME1 || exit
+
+	if cd ./$NAME2 2> /dev/null
+	then
+		do_pwd
+		ask_do git pull
+		GET_GITE_add_to_log "$URL2"
+	else
+		do_pwd
+		ask_do_git_clone "$URL2" 
+		GET_GITE_add_to_log "$URL2"
+	fi
+}
+
+# main #
+
+[ -z "$1" ] || GET_GIT_fn "$1"
+

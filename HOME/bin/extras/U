@@ -1,0 +1,28 @@
+
+if [ -f /var/run/reboot-required ]; then
+        cat /var/run/reboot-required
+fi
+
+set -x
+
+# echo y | \
+sudo apt update -y
+sudo apt upgrade -y 
+sudo apt autoremove -y
+sudo apt autoclean
+
+
+# /etc/update-motd.d/
+# 98-reboot-required
+
+set +x
+if [ -f /var/run/reboot-required ]; then
+        cat /var/run/reboot-required
+fi
+
+
+case "$1"
+in
+	0|6) xxx "$1"
+;;	H|h) sleep_hibernate ; set -x; sleep 30 ; sleep 120; U
+esac
