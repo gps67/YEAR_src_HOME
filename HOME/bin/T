@@ -1,0 +1,27 @@
+#!/bin/bash
+
+. ~/.bashrc
+
+export EDITOR=vi
+
+get_auth()
+{
+ echo \
+	xauth add $(xauth -f ~gps/.Xauthority list | tail -1)
+}
+
+FGBG="-fg black -bg white" # RASH multiword
+id | grep root && FGBG="-fg green -bg black" # RASH multiword
+id | grep root && get_auth
+# when xterm gets HUGE font - 51 lines on screen under xfce
+WW=80
+HH=51
+HH=45
+FONTS="-fa Monospace -fs 14"
+# ssh from elsewhere # use smaller HH 
+[ -z "$SSH_CLIENT" ] || HH=35
+set -x
+# did want a P_R_T_C
+xterm  $FGBG $FONTS -geometry ${WW}x${HH} -e "${@:-bash}" &
+sleep 2
+
