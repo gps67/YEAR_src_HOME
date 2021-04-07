@@ -1,0 +1,112 @@
+#!/bin/bash
+# go_tarball_crypt
+
+# delete go_tarball (symb link) so that it is not called by accident
+# install this in its place
+# place it in the applications top dir, which MUST be named:
+# APPNAME-1999-12-31 (actually it validates against a 2000 year date!)
+# see go_rename_dir that sets the currect date, if already plausibly dated
+# Put your secret passphrase in a file in the top,
+# but do not forget it! This level of encryption is secure,
+# unless you can remember all variations of passwords you ever used.
+# Avoid spaces in the passphrase, and UTF8 and 8859 (in case of auto conv)
+
+# The rest of the file follows go_tarball
+# maybe refactor somehow, to a set of common functions
+
+# NO SPACES IN PASSPHRASE - SORRY
+BF_SECRET=`cat .tgz_bf_secret`
+BF_SECRET="${BF_SECRET:-yourpassphrasehere}"
+echo using secret $BF_SECRET
+
+this_dir=`pwd -P`
+D0=`dirname $this_dir`
+d1=`basename $this_dir`
+x1=$d1/.tar_excl_list
+
+function expr_NAME_year_mm_dd()
+{
+	expr match "$1" '\(.*\)[-_]20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+}
+
+function expected_NAME_year_mm_dd()
+{
+	echo "expected name-2000-12-31 got $1"
+	return 22
+}
+
+if name=`expr_NAME_year_mm_dd $d1`
+then
+	: OK
+	# d1="$name"
+else
+	expected_NAME_year_mm_dd $d1
+	exit 1
+fi
+
+
+# SKIPPED # rm -f *.pyc
+
+cd $D0
+pwd
+
+if : false :
+then
+	tar_file=$d1.tgz
+	Z=-z
+else
+	tar_file=$d1.tar.bz2
+	Z=-I
+fi
+
+if [ -d tars/. ]
+then
+	tar_file=tars/$tar_file
+elif [ -d ../tars/. ]
+then
+	tar_file=../tars/$tar_file
+fi
+
+tmp_file=$d1.tmp
+
+[ -f $x1 ] || touch $x1
+
+# .exe  - REMAINS to distribute WIN32, .zip files ??
+# .exec - used by tests for .exe
+# .dump - used by ??? for objdump
+
+set -x
+if tar -v $Z \
+--exclude='*.swp' \
+--exclude='*.so' \
+--exclude='*.o' \
+--exclude='*.a' \
+--exclude='*.pyc' \
+--exclude='*.class' \
+--exclude='*.exec' \
+--exclude='*.dump' \
+--exclude='.fa' \
+--exclude='.fa?' \
+--exclude='.fb' \
+--exclude='fa' \
+--exclude='fb' \
+--exclude='.bzr' \
+--exclude='a.out' \
+--exclude-from=$x1 \
+--totals \
+-cf $tmp_file \
+$name $d1
+then
+	mv -f $tmp_file ${tmp_file}.plain
+	if openssl \
+		enc \
+		-bf-cbc \
+		-in ${tmp_file}.plain \
+		-out ${tmp_file} \
+		-pass "pass:${BF_SECRET}" \
+		#
+	then
+		mv -f $tmp_file ${tar_file}.bf
+		du -sk $tar_file.bf
+	fi
+fi

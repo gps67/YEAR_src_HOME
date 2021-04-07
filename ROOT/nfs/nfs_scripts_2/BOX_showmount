@@ -1,0 +1,5 @@
+. ./fn_NFS
+rerun_as_root "$@"
+
+BOX2="${1:-NAS2}"
+showmount -e $BOX2

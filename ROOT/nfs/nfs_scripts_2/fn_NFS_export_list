@@ -1,0 +1,60 @@
+
+get_NFS_export_list()
+{
+  NFS_export_list="" # global side effect
+  local box="${1:-boxl}"
+  local LIST1="NOSUCHDIRLIST"
+  case "$box"
+  in	xx) :
+  ;;	NAS1) LIST1="
+	/mnt/HD/HD_a2
+	/mnt/HD/HD_b2
+  "
+
+  ;;	NAS2) LIST1="
+	/mnt/HD/HD_a2
+	/mnt/HD/HD_b2
+  "
+
+  ;;	NAS3) LIST1="
+	/mnt/HD/HD_a2
+	/mnt/HD/HD_b2
+  "
+
+  ;;	TVPC) LIST1="
+	/
+	/media/hda1
+	/media/hda10
+	/media/hda2
+	/media/hda3
+	/media/hda6
+	/media/hda7
+	/media/hda9
+	/media/hdc1
+	/media/hdc4
+  "
+
+  ;;	D630) LIST1="
+	/
+  "
+
+  ;;	M200) LIST1="
+	/media/M200
+  "
+
+  ;;	X3) LIST1="
+	/
+	/media/USB30G
+	/media/USB2T
+	/media/ROOT6
+	/media/X3B
+	/media/X3
+  "
+  ;;	*) : 
+  ;;
+  esac
+  NFS_export_list="$LIST1"
+  # echo "$LIST1"
+}
+
+

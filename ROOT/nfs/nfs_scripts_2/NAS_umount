@@ -1,0 +1,4 @@
+. ./fn_NFS
+rerun_as_root
+umount_all_nfs
+# mount_t_nfs

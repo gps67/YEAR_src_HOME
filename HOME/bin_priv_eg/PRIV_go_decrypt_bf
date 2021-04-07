@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+#!/bin/bash
+# go_decrypt_bf
+
+# invocke with the full name of the .bf blowfish encrypted file
+# path not required if it is in ../tars
+# put the passphrase in ./.tgz_bf_secret
+#	vi .tgz_bf_secret
+# thats helpful when CREATING the .bf, but not when extracting!
+# this is in need of an SQL database of projects and their secrets
+# and seed a project with a subdir of atts, or an .lsm file or ... X
+
+# EDIT THIS or pass as $1
+NAME1=appname-1999-12-31.tgz.bf
+
+# THIS DOES NOT MAKE SO MUCH SENSE THOUGH
+# NAME1=`basename $(pwd -P)`.tgz.bf
+
+# USAGE $0 file.bf
+# USAGE $0 file.bf file.plain
+# ERROR $0 file # will replace crypted file, but only after sucessful decrypt
+
+# CLOBBERS file_ # 
+# NOTE .tgz.bf can be in ../tars dir, and .tgz will be here
+
+file_crypted=${1:-$NAME1}
+file_plain=${2:-`basename $file_crypted .bf`}
+
+for d in . ./tars .. ../tars ../../tars
+do
+	f=$d/$file_crypted
+	if [ -f $f ]
+	then
+		echo found $f
+		break
+	fi
+done
+
+BF_SECRET=`cat .tgz_bf_secret`
+BF_SECRET="${BF_SECRET:-YourPassphrase_here}" # no spaces allowed ?
+echo using secret $BF_SECRET
+
+cd ../tars || cd ../../tars || echo NO TARS DIR
+
+# you really cannot have a space in the password ??
+PASSWOPT=" -pass 'pass:$BF_SECRET' "
+PASSWOPT=" -pass pass:$BF_SECRET "
+PASSWOPT=""
+PASSWOPT=" -pass 'pass:$BF_SECRET' " # Invalid password argument "'pass:XXXX.'"
+PASSWOPT=" -pass pass:$BF_SECRET " # SEE! openssl drops the trailing space
+
+# set -x
+if ask_do openssl \
+	enc -d \
+	-bf-cbc \
+	-in ${file_crypted} \
+	-out ${file_plain}_ \
+	$PASSWOPT \
+	#
+then
+	mv ${file_plain}_ \
+	   ${file_plain} 
+	ls -l \
+		${file_crypted} \
+		${file_plain} \
+	#
+#
+else
+	rm ${file_plain}_ 
+	echo The decryption failed
+fi
+
+exit
+
+#################################################################

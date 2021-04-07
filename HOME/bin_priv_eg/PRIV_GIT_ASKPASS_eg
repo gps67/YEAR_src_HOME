@@ -1,0 +1,79 @@
+#!/bin/bash
+. fns_FAIL
+echo >&2 "# $0 # $* "
+echo >&2 "#   ARG1 '$1'"
+
+echo >> /tmp/log_PRIV_GIT_ASKPASS_log.GIT_ASKPASS "# $0 # $* "
+
+# Username for 'https://github.com':
+# Password for 'https://gps67@github.com':
+# <-- added hash sp
+# above is all $1 (except initial # ) trailing SP
+# this is basically nonsense
+# it is helpfully single quoted
+# then corrupted with :
+# then all on one arg[1]
+
+. fns_VARS
+var_add PATH $HOME/bin_priv
+
+function test1()
+{
+	# if the question is Username ...
+	local T
+	if T=`expr match "$1" "Username for '\([^']*\)': "`
+	then
+	 case "$T"
+	 in
+		https://github.com)
+			echo gps67
+			exit 0
+	 ;;
+	 	*)
+			echo gps67
+			FAIL expected ... got $T
+			exit 1
+	 esac
+	fi
+
+	# if the question is Password ...
+	if T=`expr match "$1" "Password for '\([^']*\)': "`
+	then
+	 case "$T"
+	 in
+		https://gps67@github.com)
+		# created 2021-01-22
+		# to set/get this secret key
+		# login, user settings, developer settings,
+		# personal access tokens, new token, desc, flags
+		# flags += repo += read:repo_hook
+		# generate key, (leads to delete screen too)
+		# shows code being used
+		#	echo "FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00" >&2
+		# use as password 
+		# NOT FOR SSH users
+			echo "FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00" 
+		#	echo "plainpasswashere"
+			exit 0
+	 ;;
+	 	*)
+			FAIL no password for $T
+			exit 1
+	 esac
+	fi
+	FAIL 22 got "$1"
+}
+
+test1 "$@"
+exit
+
+test1 "Password for 'https://gps67@github.com': "
+test1 "Password for 'https://github.com': "
+test1 "Username for 'https://gps67@github.com': "
+test1 "Username for 'https://github.com': "
+test1 "other"
+exit
+
+
+PRIV_GIT_ASKPASS "$@"
+

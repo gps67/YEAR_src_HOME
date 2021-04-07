@@ -1,0 +1,35 @@
+#!/bin/bash
+. fns_FAIL
+echo >&2 "# $0 # $* "
+echo >&2 "#   ARG1 '$1'"
+
+echo >> /tmp/log_PRIV_GIT_ASKPASS_log.GIT_ASKPASS "# $0 # $* "
+
+# Username for 'https://github.com':
+# Password for 'https://gps67@github.com':
+# <-- added hash sp
+# above is all $1 (except initial # ) trailing SP
+# this is basically nonsense
+# it is helpfully single quoted
+# then corrupted with :
+# then all on one arg[1]
+
+. fns_VARS
+var_add PATH $HOME/bin_priv
+
+function test1() {
+	PRIV_GIT_ASKPASS "$@"
+}
+
+test1 "Password for 'https://gps67@github.com': "
+test1 "Password for 'https://github.com': "
+test1 "Username for 'https://gps67@github.com': "
+test1 "Username for 'https://github.com': "
+test1 "other"
+exit
+
+test1 "$@"
+exit
+
+
+

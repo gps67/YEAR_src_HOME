@@ -1,0 +1,2 @@
+set -x
+mount NAS2:/mnt/HD/HD_a2 /nfs/mnt

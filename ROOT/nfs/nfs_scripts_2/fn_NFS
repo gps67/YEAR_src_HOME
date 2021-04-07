@@ -1,0 +1,169 @@
+
+PATH=$PATH:$HOME/bin:/home/gps/bin:/home/gps/bin_LGX
+. /home/gps/.bashrc
+
+. fns_var_add
+var_add PATH $HOME/bin
+. ./fn_NFS_export_list
+
+. fns_ASKS
+. fns_DIRS
+
+is_root()
+{
+	if [ 0 = `id -u` ]
+	then
+		return 0
+	else
+		return 1
+	fi
+}
+
+is_mounted()
+{
+	local box="${1:-box}"
+	local dir="${2:-dir}"
+	mount -t nfs | grep "^${box}:${dir}" > /dev/null
+}
+
+say_do()
+{
+	echo "$@"
+	"$@"
+}
+
+gen_export_lines()
+{
+	local box="${1:-nfsbox}"
+	local dir=dir
+	echo "# on $box /etc/exports "
+	get_NFS_export_list $box
+	for dir in $NFS_export_list
+	do
+		gen_export_line $box $dir
+	done
+}
+
+gen_export_line()
+{
+	local box="${1:-nfsbox}"
+	local dir="${2:-DIREXPORTED}"
+	echo "$dir 192.168.0.0/16(rw,async,no_subtree_check,no_root_squash)"
+}
+
+mount_box_dir()
+{
+	local box=$1
+	local dir=$2
+
+	is_mounted $box $dir && echo "## already MOUNTED ## $box $dir"
+	is_mounted $box $dir && return
+
+	local M0=/nfs/$box
+	[ -d $M0 ] || ask_do mkdir $M0
+	[ -d $M0 ] || return
+	local M=/nfs/$box$dir
+	local N=$box:$dir
+	[ -d $M ] || ask_do mkdir -p $M
+	OPTS="soft"
+	OPTS="$OPTS,noauto"
+	OPTS="$OPTS,suid"
+#	OPTS="$OPTS,user" # problems with noexec
+#	OPTS="$OPTS,proto=udp" # STOPPED WORKING JAN 2021
+	OPTS="$OPTS,intr"
+	OPTS="$OPTS,exec"
+	OPTS="$OPTS,nolock"
+#	OPTS="$OPTS,nfsvers=2"	# problems with 31bit file size ?
+	OPTS="$OPTS,nfsvers=3"
+#
+	pings_box $box
+#	ask_do \
+	if say_do \
+	mount $N $M -o "$OPTS"
+#	mount $N $M -o user,noauto,suid,soft,proto=udp,intr,exec,nolock,nfsvers=2
+	then
+		:
+	else
+		echo ask_do "mount $M failed - thow a fit"
+	fi
+}
+
+umount_box_dir()
+{
+	local box=$1
+	local dir=$2
+
+	is_mounted $box $dir || echo "## not MOUNTED ## $box $dir"
+	is_mounted $box $dir || return
+
+	local M0=/nfs/$box
+	[ -d $M0 ] || ask_do mkdir $M0
+	[ -d $M0 ] || return
+	local M=/nfs/$box$dir
+	local N=$box:$dir
+
+	say_do umount -f $M
+}
+
+
+mount_box_all()
+{
+	local box="${1:-box}"
+	get_NFS_export_list $box
+	for d in $NFS_export_list
+	do
+		say_do mount_box_dir $box $d
+	done
+	# say_do mount_t_nfs
+}
+
+umount_box_all()
+{
+	local box="${1:-box}"
+	get_NFS_export_list $box
+	for d in $NFS_export_list
+	do
+		say_do umount_box_dir $box $d
+	done
+	# say_do mount_t_nfs
+}
+
+say_do()
+{
+	echo "# RUN #" "$@"
+	"$@"
+}
+
+pings_box()
+{
+	local box="${1:-abox}"
+
+	ping -c 1 $box >/dev/null 2>&1 && return
+	for attempt in 1 2 3 4 5 6 7 8 9 10 11 12
+	do
+		say_do sleep 10
+		say_do ping -c 1 $box && return
+	done
+}
+
+rerun_as_root()
+{
+	# id
+	if is_root
+	then
+		:
+	else
+		say_do sudo $0 $@
+		exit
+	fi
+}
+
+umount_all_nfs()
+{
+	say_do umount -a -t nfs
+}
+
+mount_t_nfs()
+{
+	mount -t nfs
+}

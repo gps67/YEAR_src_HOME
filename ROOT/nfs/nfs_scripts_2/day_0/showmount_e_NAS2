@@ -1,0 +1,3 @@
+set -x
+showmount -e NAS2
+showmount -e NAS3

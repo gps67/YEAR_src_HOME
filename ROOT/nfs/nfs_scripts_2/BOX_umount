@@ -1,0 +1,5 @@
+. ./fn_NFS
+rerun_as_root "$@"
+say_do umount_box_all "${1:-NAS2}"
+# mount_t_nfs
+
