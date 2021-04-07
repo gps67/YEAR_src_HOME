@@ -1,0 +1,8 @@
+set -x
+# echo "# mouse loses the top focussed when mouse goes over background"
+# echo "# sloppy keeps the top focussed when mouse goes over background"
+echo "# clicking on a window does not raise it, try ALT_C"
+
+# gsettings set org.gnome.desktop.wm.preferences focus-mode 'click'
+# gsettings set org.gnome.desktop.wm.preferences focus-mode 'sloppy'
+gsettings set org.gnome.desktop.wm.preferences focus-mode 'mouse'
