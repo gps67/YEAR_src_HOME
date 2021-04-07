@@ -17,7 +17,7 @@ D1=/media/X3/2011/src/libs_apps
 D1=/home/gps/YEAR/src/PLAY/libs_apps
 
 # actually $YYYY/ might be better, but 2020 does exist on JAN 1st
-if [ ! -d $HOME/2021/ ]
+if [ ! -d $HOME/2020/ ]
 then
 	D1=$HOME/G/nfs/nfs_scripts_2
 fi
