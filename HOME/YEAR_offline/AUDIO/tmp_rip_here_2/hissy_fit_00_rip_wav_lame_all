@@ -1,0 +1,37 @@
+. ./.env1
+
+# ask_do hissy_fit --rip_here # but with pipe tee log
+# --rip_here rips CD to WAV in this dir
+echo "hissy_fit --rip_here rips CD to WAV in this dir"
+if yes_no "hissy_fit --rip_here # PWD == $PWD"
+then
+	hissy_fit --rip_here \
+	2>&1 | tee rip_log.txt
+fi
+
+echo "#"
+echo "# hissy_fit --cddb_summary - shows ARTIST ALBUM names about to be used"
+echo "#"
+hissy_fit --cddb_summary audio.cddb
+
+# move WAVs to ~/audio/wavs/ARTIST/ALBUM/01_plainname.wav
+# its good to not movethings if it didnt wok properly
+# it also gives a chance to edit ARTIST/ALBUM
+echo "#"
+echo "# hissy_fit --process_wav_to_wav # moves the files into place"
+echo "#"
+ask_do hissy_fit --process_wav_to_wav audio.cddb
+
+# WAV -> LAME -> MP3
+# note that filename changes to TRACKNAME  
+# when loading bulks, can do wav_20_mp3 later
+echo "#"
+echo "# hissy_fit --cddb_summary - shows artist album TRACK names to be used"
+echo "#"
+hissy_fit --cddb_summary .test_out_cddb
+echo "#"
+echo "# hissy_fit --process_wav_to_mp3 # converts to mp3"
+echo "#"
+ask_do hissy_fit --process_wav_to_mp3 .test_out_cddb
+
+hissy_fit --cddb_summary .test_out_cddb
