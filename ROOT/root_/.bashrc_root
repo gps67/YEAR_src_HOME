@@ -1,0 +1,46 @@
+
+
+. $HOME/bin/fns_VARS
+# fns_VARS
+# var_add var_pfx
+# uses ~/bin_LGX/PATH_TOOL
+
+# THIS IS NAFF # look at -rpath during build
+var_add LD_LIBRARY_PATH \
+	/tools/CTXT/py/lib \
+#
+
+var_add PATH \
+	$HOME/prefix/bin \
+	/tools/CTXT/py/bin \
+	/tools/CTXT/tcl/bin \
+	/tools/CTXT/util/bin \
+#
+var_add PATH \
+	$HOME/bin	\
+	$HOME/bin_NFS	\
+	$HOME/bin/bin_one	\
+	$HOME/bin/bin_two	\
+	$HOME/bin_LGX	\
+	$HOME/bin_NFS_down	\
+#
+# var_add PATH $HOME/bin2
+
+# new scripts go to bin_NFS
+# but do remember to update (git?) and remain independent of NFS
+
+# strange errors when . not searched, and best early, eg cd src
+
+var_pfx CDPATH :
+var_add CDPATH $HOME/YEAR
+var_add CDPATH $HOME/YEAR/src
+
+# perl5 now unused
+
+# PERL_MB_OPT="--install_base \"/home/gps/perl5\""; export PERL_MB_OPT;
+# PERL_MM_OPT="INSTALL_BASE=/home/gps/perl5"; export PERL_MM_OPT;
+
+export EDITOR=${EDITOR:-vim}
+
+
+
