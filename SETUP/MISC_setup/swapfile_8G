@@ -1,0 +1,11 @@
+set -x
+swapfile=/swapfile8
+ask_do sudo dd if=/dev/zero of=$swapfile bs=1M count=8K status=progress
+du -h $swapfile
+ask_do sudo mkswap $swapfile
+ask_do sudo vi /etc/fstab
+ask_do sudo swapon -a
+ask_do sudo chmod 600 $swapfile
+ask_do sudo chown root.root $swapfile
+free
+
