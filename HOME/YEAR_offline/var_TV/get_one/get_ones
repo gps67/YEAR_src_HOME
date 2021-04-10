@@ -1,0 +1,351 @@
+# exit
+PATH=$PATH:/var/TV/get_iplayer/:/home/gps/G/PVR/var_TV_scripts/get_iplayer/
+# cd /home/gps/2016/PVR_2016
+D1=`date +/home/gps/%Y/PVR_%Y`
+D1=/var/TV/PVR/FETCH
+cd $D1 || ask_do mkdir $D1
+cd $D1 || exit
+pwd
+# http://www.bbc.co.uk/iplayer/episode/b062vqcx/the-outcast-episode-1
+MODES=flashhigh
+MODES=$MODES,hlshigh
+MODES=$MODES,flashaachigh
+MODES=$MODES,flashaaclow
+MODES=$MODES,flashaacstd
+MODES=$MODES,hlsaacstd 
+
+# INFO: Try using --modes=dvflow,dvfxhigh,dvfxsd,hvfxhigh,hvflow,hvfhigh,hvfxsd
+MODES=dvflow
+#MODES=$MODES,dvfxhigh
+MODES=$MODES,dvfxsd
+#MODES=$MODES,hvfxhigh
+MODES=$MODES,hvflow
+#MODES=$MODES,hvfhigh
+MODES=$MODES,hvfxsd
+
+oldD_A() {
+ [ -d logs ] || mkdir logs
+ echo $0 $*
+ get_iplayer 	\
+	--nopurge	\
+	--subtitles	\
+	--modes=$MODES	\
+	--pid=$1	\
+	--pvr-queue	\
+ 2>&1 | tee logs/log_get_$1.log
+#
+#--modes=flashhigh,hlshigh,flashaachigh,flashaaclow,flashaacstd,hlsaacstd \
+#--pid=b063d5q5 \
+}
+
+## web queue
+# comment Windrush: Movement of the People -  (queued: Mon Feb 18 02:37:23 2019)
+# force 0
+# fps25 0
+# metadata generic
+# pid m0002pkp
+# subtitles 1
+# thumb 1
+# type tv
+
+
+D_A() {
+ [ -d logs ] || mkdir logs
+ echo $0 $*
+ get_iplayer 	\
+	--subtitles	\
+	--pid=$1	\
+	--pid-recursive	\
+	--pvr-queue	\
+ 2>&1 | tee logs/log_get_$1.log
+#
+#--modes=flashhigh,hlshigh,flashaachigh,flashaaclow,flashaacstd,hlsaacstd \
+#--pid=b063d5q5 \
+}
+
+# D_A b06n32k7 cuffs1
+# exit
+
+E() {
+	if yes_no DOWNLOAD "$@"
+	then
+		set -x
+		Ex "$@"
+		set +x
+		echo "Exit code $?"
+	fi
+}
+Ex() {
+	# echo "$@"
+	local E1='https*://www.bbc.co.uk/iplayer/episode/\([^/]*\)$' 
+	local E2='https*://www.bbc.co.uk/iplayer/episode/\([^/]*\)/$' 
+	local E3='https*://www.bbc.co.uk/iplayer/episode/\([^/]*\)/.*$'
+	# programmes/ doesnt work - it is the website for future shows ?
+	local E4='https*://www.bbc.co.uk/programmes/\([^/]*\)$'
+	local E5='https*://www.bbc.co.uk/programmes/\([^/]*\)/.*$'
+	local E6='https*://www.bbc.co.uk/iplayer/episodes/\([^/]*\)/.*$'
+	ID1=`expr match "$1" "$E1"` \
+||	ID1=`expr match "$1" "$E2"` \
+||	ID1=`expr match "$1" "$E3"` \
+||	ID1=`expr match "$1" "$E4"` \
+||	ID1=`expr match "$1" "$E5"` \
+||	ID1=`expr match "$1" "$E6"` \
+||	return 1
+	echo "ID1 = '$ID1'"
+	D_A "$ID1"
+}
+
+E https://www.bbc.co.uk/iplayer/episode/p00z8bp6/brazil-with-michael-palin-1-out-of-africa
+exit
+E https://www.bbc.co.uk/iplayer/episode/p08fkgr8/the-luminaries-series-1-1-fingerprint?seriesId=p08fkfpb
+E https://www.bbc.co.uk/iplayer/episode/p08fkgty/the-luminaries-series-1-2-the-place-you-return?seriesId=p08fkfpb
+E https://www.bbc.co.uk/iplayer/episode/p08frmg3/the-luminaries-series-1-3-leverage?seriesId=p08fkfpb
+E https://www.bbc.co.uk/iplayer/episode/p08frmt6/the-luminaries-series-1-4-the-other-half?seriesId=p08fkfpb
+E https://www.bbc.co.uk/iplayer/episode/p08frn6q/the-luminaries-series-1-5-paradox?seriesId=p08fkfpb
+E https://www.bbc.co.uk/iplayer/episode/p08frnb7/the-luminaries-series-1-6-the-old-moon-in-the-young-moons-arms
+E https://www.bbc.co.uk/iplayer/episode/p093wpgw/cant-get-you-out-of-my-head-series-1-1-part-one-bloodshed-on-wolf-mountain
+E https://www.bbc.co.uk/iplayer/episode/p093wy1r/cant-get-you-out-of-my-head-series-1-2-part-two-shooting-and-fking-are-the-same-thing
+E https://www.bbc.co.uk/iplayer/episode/p093wytt/cant-get-you-out-of-my-head-series-1-3-part-three-money-changes-everything
+E https://www.bbc.co.uk/iplayer/episode/p093wz8v/cant-get-you-out-of-my-head-series-1-4-part-four-but-what-if-the-people-are-stupid
+E https://www.bbc.co.uk/iplayer/episode/p093x0k6/cant-get-you-out-of-my-head-series-1-5-part-five-the-lordly-ones
+E https://www.bbc.co.uk/iplayer/episode/p093x1c1/cant-get-you-out-of-my-head-series-1-6-part-six-are-we-pigeon-or-are-we-dancer
+
+E https://www.bbc.co.uk/iplayer/episode/m000ryd0/pirates-of-the-caribbean-salazars-revenge
+E https://www.bbc.co.uk/iplayer/episode/m000b1v0/his-dark-materials-series-1-1-lyras-jordan
+E https://www.bbc.co.uk/iplayer/episode/m000qqtl/dunkirk
+E https://www.bbc.co.uk/iplayer/episode/b08r3xr3/horizon-2017-14-strange-signals-from-outer-space
+exit
+E https://www.bbc.co.uk/iplayer/episode/b0bdvxzn/abducted-elizabeth-is-child-actors
+E https://www.bbc.co.uk/iplayer/episode/b007q86z/the-jackal
+E https://www.bbc.co.uk/iplayer/episode/b04xv91w/selma
+E https://www.bbc.co.uk/iplayer/episode/p08g29ff/sitting-in-limbo
+E https://www.bbc.co.uk/iplayer/episode/p089kmdv/killing-eve-series-3-8-are-you-leading-or-am-i
+
+E https://www.bbc.co.uk/iplayer/episode/b007cjz1/man-on-the-moon
+E https://www.bbc.co.uk/iplayer/episode/m000hyv7/norm
+E https://www.bbc.co.uk/iplayer/episode/m000j4zq/norm
+E https://www.bbc.co.uk/iplayer/episode/m000j4wd/darkest-hour
+E https://www.bbc.co.uk/iplayer/episode/b0bkvw8v/king-arthurs-britain-the-truth-unearthed
+
+E https://www.bbc.co.uk/iplayer/episodes/b084k4p1/rillington-place
+E https://www.bbc.co.uk/iplayer/episode/b084k66c/rillington-place-1-ethel
+E https://www.bbc.co.uk/iplayer/episode/b08509y1/rillington-place-2-tim
+E https://www.bbc.co.uk/iplayer/episode/b0861pnj/rillington-place-3-reg
+
+E https://www.bbc.co.uk/iplayer/episodes/p01z78nq/the-honourable-woman
+E https://www.bbc.co.uk/iplayer/episode/m000hrgj/the-elephant-man
+E https://www.bbc.co.uk/iplayer/episode/b01460s8/edge-of-darkness
+E https://www.bbc.co.uk/iplayer/episode/b0464qtx/the-borderlands
+
+E https://www.bbc.co.uk/iplayer/episode/b053j5n1/wolf-hall-5-crows
+E https://www.bbc.co.uk/iplayer/episode/b052sfnf/wolf-hall-4-the-devils-spit
+E https://www.bbc.co.uk/iplayer/episode/b0520v9d/wolf-hall-3-anna-regina
+E https://www.bbc.co.uk/iplayer/episode/b05172x8/wolf-hall-2-entirely-beloved
+E https://www.bbc.co.uk/iplayer/episode/p02gfy74/wolf-hall-1-three-card-trick
+
+E https://www.bbc.co.uk/iplayer/episode/b0547rvc/wolf-hall-6-masters-of-phantoms
+E https://www.bbc.co.uk/iplayer/episode/m000gpkw/our-girl-series-4-episode-1
+
+E https://www.bbc.co.uk/iplayer/episode/p087glmx/devs-series-1-episode-3
+E https://www.bbc.co.uk/iplayer/episode/p087gmd9/devs-series-1-episode-4
+E https://www.bbc.co.uk/iplayer/episode/p087gmp7/devs-series-1-episode-5
+E https://www.bbc.co.uk/iplayer/episode/p087gmt9/devs-series-1-episode-6
+E https://www.bbc.co.uk/iplayer/episode/p087gmx7/devs-series-1-episode-7
+E https://www.bbc.co.uk/iplayer/episode/p087gn05/devs-series-1-episode-8
+E https://www.bbc.co.uk/programmes/m000fjqk
+
+E https://www.bbc.co.uk/iplayer/episode/m000ct7y/the-trial-of-christine-keeler-series-1-episode-1
+E https://www.bbc.co.uk/iplayer/episode/m000ct76/the-trial-of-christine-keeler-series-1-episode-2
+
+
+
+E https://www.bbc.co.uk/iplayer/episode/b0791n9n/half-of-a-yellow-sun
+
+E https://www.bbc.co.uk/iplayer/episode/m000b8c3/dr-strangelove-or-how-i-learned-to-stop-worrying-and-love-the-bomb
+
+
+
+E https://www.bbc.co.uk/iplayer/episode/b061y4qk/imagine-summer-2015-3-beware-of-mr-baker
+
+E https://www.bbc.co.uk/iplayer/episode/p07jh45h/peaky-blinders-extras-the-rise-of-tommy-shelby
+E https://www.bbc.co.uk/iplayer/episode/p07ngtc2/peaky-blinders-extras-bonus-scene-tommy-and-polly
+E https://www.bbc.co.uk/iplayer/episode/p07n8wvt/peaky-blinders-extras-impressions-with-scheiffer-bates
+E https://www.bbc.co.uk/iplayer/episode/p07kjf5n/peaky-blinders-extras-the-ballad-of-the-peaky-blinders
+E m0002byz
+E https://www.bbc.co.uk/programmes/m0002byz
+E https://www.bbc.co.uk/programmes/m0002h9y
+
+
+
+E https://www.bbc.co.uk/iplayer/episode/b06km7fb/effie-gray
+
+E https://www.bbc.co.uk/iplayer/episode/b076v9fd/undercover-episode-1
+E https://www.bbc.co.uk/iplayer/episode/b077rxb2/undercover-episode-2
+E https://www.bbc.co.uk/iplayer/episode/b078c2f0/undercover-episode-3
+E https://www.bbc.co.uk/iplayer/episode/b07946l4/undercover-episode-4
+E https://www.bbc.co.uk/iplayer/episode/b079s75g/undercover-episode-5
+E https://www.bbc.co.uk/iplayer/episode/b07cgm1y/undercover-episode-6
+
+E https://www.bbc.co.uk/iplayer/episode/p06zb13p/it-follows
+
+E https://www.bbc.co.uk/iplayer/episode/m00059m7/gentleman-jack-series-1-episode-1
+
+E https://www.bbc.co.uk/iplayer/episode/m00042j5/dont-forget-the-driver-series-1-episode-1
+
+
+E https://www.bbc.co.uk/iplayer/episode/b07bpbqr/mum-series-1-1-january
+E https://www.bbc.co.uk/iplayer/episode/b07cgmdq/mum-series-1-2-february
+E https://www.bbc.co.uk/iplayer/episode/b07d4kry/mum-series-1-3-may
+E https://www.bbc.co.uk/iplayer/episode/b07dx786/mum-series-1-4-august
+E https://www.bbc.co.uk/iplayer/episode/b07g8n6k/mum-series-1-5-october
+E https://www.bbc.co.uk/iplayer/episode/b07grv4y/mum-series-1-6-december
+E https://www.bbc.co.uk/iplayer/episode/b09sykm3/mum-series-2-1-march
+E https://www.bbc.co.uk/iplayer/episode/b09tqxdy/mum-series-2-2-april
+E https://www.bbc.co.uk/iplayer/episode/b09vjxpy/mum-series-2-3-june
+E https://www.bbc.co.uk/iplayer/episode/b09w8mq0/mum-series-2-4-july
+E https://www.bbc.co.uk/iplayer/episode/b09x0z14/mum-series-2-5-september
+E https://www.bbc.co.uk/iplayer/episode/b09xy9xd/mum-series-2-6-november
+
+
+E https://www.bbc.co.uk/iplayer/episode/m0004m5b/south-today-evening-news-25042019
+
+
+E https://www.bbc.co.uk/iplayer/episode/p0720g10/famalam-turf-wars
+E https://www.bbc.co.uk/iplayer/episode/b095dzjm/famalam-pilot
+E https://www.bbc.co.uk/iplayer/episode/p0740hd5/famalam-series-2-episode-4
+E https://www.bbc.co.uk/iplayer/episode/p0740dt4/famalam-series-2-episode-3
+E https://www.bbc.co.uk/iplayer/episode/p0740d8d/famalam-series-2-episode-2
+E https://www.bbc.co.uk/iplayer/episode/p0740csc/famalam-series-2-episode-1
+
+E https://www.bbc.co.uk/programmes/m0002pkk 1
+E https://www.bbc.co.uk/programmes/m0002pkm 2
+E https://www.bbc.co.uk/programmes/m0002pkb 3
+E https://www.bbc.co.uk/programmes/m0002pkd 4
+E https://www.bbc.co.uk/programmes/m0002pk2 5
+E https://www.bbc.co.uk/programmes/m0002pk4 6
+E https://www.bbc.co.uk/programmes/m0002pgj 7
+E https://www.bbc.co.uk/programmes/m0002pgm 8
+
+
+E https://www.bbc.co.uk/programmes/b02xjfgy # sapphires
+E https://www.bbc.co.uk/programmes/b00p5wrk
+
+E https://www.bbc.co.uk/iplayer/episode/p04qw7jq/clique-series-1-episode-1
+E https://www.bbc.co.uk/iplayer/episode/p04qw7rz/clique-series-1-episode-2
+E https://www.bbc.co.uk/iplayer/episode/p04qw80d/clique-series-1-episode-3
+E https://www.bbc.co.uk/iplayer/episode/p04qw8bp/clique-series-1-episode-4
+E https://www.bbc.co.uk/iplayer/episode/p04qw8j9/clique-series-1-episode-5
+E https://www.bbc.co.uk/iplayer/episode/p04qw8lk/clique-series-1-episode-6
+E https://www.bbc.co.uk/iplayer/episode/p06qc2sz/clique-series-2-episode-1
+
+E https://www.bbc.co.uk/programmes/b0082fjd # 1 house of cards
+E https://www.bbc.co.uk/programmes/b0074ptv # 2
+E https://www.bbc.co.uk/programmes/b0074ptw # 3
+E https://www.bbc.co.uk/programmes/b0074ptx # 4
+
+E https://www.bbc.co.uk/programmes/b05yxzlj
+E https://www.bbc.co.uk/programmes/b05zq7xf
+E https://www.bbc.co.uk/programmes/b0600385
+E https://www.bbc.co.uk/iplayer/episode/b00g8hbw/wallace-and-gromit-a-matter-of-loaf-and-death
+E https://www.bbc.co.uk/iplayer/episode/b008lzc1/extras-christmas-special
+E https://www.bbc.co.uk/iplayer/episode/b00793gs/extras-series-2-episode-6
+E https://www.bbc.co.uk/iplayer/episode/b00793cq/extras-series-2-episode-5
+E https://www.bbc.co.uk/iplayer/episode/b007938b/extras-series-2-episode-4
+E https://www.bbc.co.uk/iplayer/episode/b007935c/extras-series-2-episode-3
+E https://www.bbc.co.uk/iplayer/episode/b0079323/extras-series-2-episode-2
+E https://www.bbc.co.uk/iplayer/episode/b00792yr/extras-series-2-episode-1
+E https://www.bbc.co.uk/iplayer/episode/b00s0dll/extras-series-1-episode-6
+E https://www.bbc.co.uk/iplayer/episode/b00s0dlj/extras-series-1-episode-5
+E https://www.bbc.co.uk/iplayer/episode/b00s0cym/extras-series-1-episode-1
+E https://www.bbc.co.uk/iplayer/episode/b00s0ch0/extras-series-1-episode-2
+E https://www.bbc.co.uk/iplayer/episode/b00s0d5n/extras-series-1-episode-3
+E https://www.bbc.co.uk/iplayer/episode/b00s0dcj/extras-series-1-episode-4
+E https://www.bbc.co.uk/iplayer/episode/b0b57d0w/king-lear
+E https://www.bbc.co.uk/iplayer/episode/p063crr8/famalam-series-1-episode-4
+E https://www.bbc.co.uk/iplayer/episode/p063cn44/famalam-series-1-episode-3
+
+E https://www.bbc.co.uk/iplayer/episode/p063cm6w/famalam-series-1-episode-2
+E https://www.bbc.co.uk/iplayer/episode/b0446mwz/nat-king-cole-afraid-of-the-dark
+E https://www.bbc.co.uk/iplayer/episode/p062r74v/famalam-series-1-episode-1
+E https://www.bbc.co.uk/iplayer/episode/b095dzjm/famalam-pilot
+
+E https://www.bbc.co.uk/iplayer/episode/b09yj7rm/conspiracy-files-murder-in-washington
+E https://www.bbc.co.uk/iplayer/episode/b09yj7dz/hamlet
+
+E https://www.bbc.co.uk/iplayer/episode/b09xt14d/troy-fall-of-a-city-series-1-6-battle-on-the-beach
+
+
+E https://www.bbc.co.uk/iplayer/episode/b09x4hmv/eastenders-22032018-part-2
+
+
+E https://www.bbc.co.uk/iplayer/episode/p05td8q1/requiem-series-1-episode-2
+E https://www.bbc.co.uk/iplayer/episode/p05tdb8q/requiem-series-1-episode-3
+E https://www.bbc.co.uk/iplayer/episode/p05tdbkr/requiem-series-1-episode-4
+E https://www.bbc.co.uk/iplayer/episode/p05tdbwm/requiem-series-1-episode-5
+E https://www.bbc.co.uk/iplayer/episode/p05tdc4k/requiem-series-1-episode-6
+
+
+E https://www.bbc.co.uk/iplayer/episode/p05pg8gt/hard-sun-series-1-episode-4
+E https://www.bbc.co.uk/iplayer/episode/p05pg8kk/hard-sun-series-1-episode-5
+E https://www.bbc.co.uk/iplayer/episode/p05pg8p8/hard-sun-series-1-episode-6
+
+E https://www.bbc.co.uk/iplayer/episode/p05pg84w/hard-sun-series-1-episode-2
+E https://www.bbc.co.uk/iplayer/episode/p05pg89k/hard-sun-series-1-episode-3
+D_A b03ftq9x
+E http://www.bbc.co.uk/iplayer/episode/p05r38yh/into-the-forest
+E http://www.bbc.co.uk/iplayer/episode/b038rp8n/az-of-world-music
+E http://www.bbc.co.uk/iplayer/episode/b08p14dy/eastenders-25042017
+
+
+E http://www.bbc.co.uk/iplayer/episode/b08pmk0q/doctor-who-series-10-3-thin-ice
+E http://www.bbc.co.uk/iplayer/episode/b08plvy6/line-of-duty-series-4-episode-6
+E http://www.bbc.co.uk/programmes/p04vnj2s
+E http://www.bbc.co.uk/programmes/p04vndh5
+E http://www.bbc.co.uk/programmes/p04vnc00
+E http://www.bbc.co.uk/programmes/p04v9ztg
+E http://www.bbc.co.uk/iplayer/episode/p04v9xt0/five-by-five-1-ash
+E ZZ
+
+E http://www.bbc.co.uk/iplayer/episode/b072z802/bruadar-a-bhaisa-dream-of-death
+E http://www.bbc.co.uk/programmes/b050g4vh
+E http://www.bbc.co.uk/iplayer/episode/p04b183c/adam-curtis-hypernormalisation
+E http://www.bbc.co.uk/iplayer/episode/p043pcly/poldark-series-2-episode-1
+E http://www.bbc.co.uk/iplayer/episode/p03lsv5y/our-girl-series-2-georgie-elvis
+E http://www.bbc.co.uk/iplayer/episode/p044bwg9/fleabag-episode-6
+E http://www.bbc.co.uk/iplayer/episode/p043m68y/fleabag-episode-5
+E http://www.bbc.co.uk/iplayer/episode/p042y4d2/fleabag-episode-4
+E http://www.bbc.co.uk/iplayer/episode/p042khwn/fleabag-episode-3
+E http://www.bbc.co.uk/iplayer/episode/p041fg83/fleabag-episode-2 
+E 'http://www.bbc.co.uk/iplayer/episode/p040trv9/fleabag-episode-1#group=p02q32p1'
+
+
+# E http://www.bbc.co.uk/programmes/p03zc113 Lear
+# E http://www.bbc.co.uk/programmes/p03zc379 Lear 2
+# E http://www.bbc.co.uk/programmes/p03qqff2 late
+E http://www.bbc.co.uk/iplayer/episode/p03rkk2x/shakespeare-lives-richard-ii
+
+E http://www.bbc.co.uk/programmes/b07bgnkn
+E http://www.bbc.co.uk/iplayer/episode/p03hnvsf/life-and-death-row-love-triangle-episode-8
+E http://www.bbc.co.uk/iplayer/episode/p03hnvl0/life-and-death-row-love-triangle-episode-7
+E http://www.bbc.co.uk/iplayer/episode/p03hnv31/life-and-death-row-love-triangle-episode-6
+E http://www.bbc.co.uk/iplayer/episode/p03hnqyv/life-and-death-row-love-triangle-episode-5
+E http://www.bbc.co.uk/iplayer/episode/p03hnpyt/life-and-death-row-love-triangle-episode-4
+E http://www.bbc.co.uk/iplayer/episode/p03hnnzj/life-and-death-row-love-triangle-episode-3
+E http://www.bbc.co.uk/iplayer/episode/p03hnng8/life-and-death-row-love-triangle-episode-2
+E http://www.bbc.co.uk/iplayer/episode/p03hnlyw/life-and-death-row-love-triangle-episode-1
+
+
+
+E http://www.bbc.co.uk/iplayer/episode/b076v9fd/undercover-episode-1
+
+E http://www.bbc.co.uk/iplayer/episode/p03nnns9/murdered-by-my-father
+E http://www.bbc.co.uk/iplayer/episode/p02gyz6b/adam-curtis-bitter-lake
+
+E http://www.bbc.co.uk/iplayer/episode/p03lcs44/thirteen-episode-3
+E http://www.bbc.co.uk/iplayer/episode/b073m6g8/panorama-the-zika-baby-crisis
+E http://www.bbc.co.uk/iplayer/episode/p03kc000/thirteen-episode-1
+E http://www.bbc.co.uk/iplayer/episode/p03ks8ym/thirteen-episode-2
+# E http://www.bbc.co.uk/iplayer/episode/b071xz0p
+# E http://www.bbc.co.uk/iplayer/episode/b071xz0p/
+# E http://www.bbc.co.uk/iplayer/episode/b071xz0p/kiplings-indian-adventure
+# E SHOULD_NOT_MATCH

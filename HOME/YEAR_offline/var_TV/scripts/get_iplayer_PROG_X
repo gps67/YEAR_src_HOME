@@ -1,0 +1,14 @@
+
+LOG1=/tmp/get_iPlayer_get1.log
+
+cd /var/TV/
+cd /var/TV/PVR/
+PATH=/var/TV/scripts:/var/TV:/var/TV/get_iplayer:$PATH
+
+get_iplayer \
+--force \
+--get \
+http://www.bbc.co.uk/programmes/p01dy1fk \
+2>&1 | tee -a $LOG1
+#
+# Flamenco_Gypsy_Soul_-__p01dy1fk_original.mp4

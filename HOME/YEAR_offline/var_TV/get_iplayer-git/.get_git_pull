@@ -1,0 +1,3 @@
+set -x
+cd get_iplayer
+git pull

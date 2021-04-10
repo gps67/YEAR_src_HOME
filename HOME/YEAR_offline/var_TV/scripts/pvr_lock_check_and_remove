@@ -1,0 +1,5 @@
+
+VAR_TV=${VAR_TV:-/var/TV}
+. $VAR_TV/.env_var_TV
+
+rm_lock_if_pid_gone $LK1 

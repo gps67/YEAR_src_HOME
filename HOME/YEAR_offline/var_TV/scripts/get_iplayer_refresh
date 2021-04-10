@@ -1,0 +1,22 @@
+#! /bin/bash
+
+# run from cron -e exits on first error (false) +e stays
+set +e
+
+VAR_TV=/var/TV
+. $VAR_TV/.env_var_TV
+(
+	date
+	pwd
+
+ # fetch list of files
+
+	get_iplayer \
+	--refresh \
+	#
+
+	date
+
+) 2>&1 | tee -a $LOG1
+
+	# --metadata-only \

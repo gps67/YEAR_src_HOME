@@ -1,0 +1,10 @@
+#! /bin/bash
+
+# run from cron -e exits on first error (false) +e stays
+set +e
+
+VAR_TV=/var/TV
+. $VAR_TV/scripts/.env_var_TV
+
+nice get_iplayer_pvr "$@" > /dev/null
+

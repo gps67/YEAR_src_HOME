@@ -1,0 +1,7 @@
+#! /bin/bash
+
+set +e
+echo /var/TV/scripts/get_iplayer_pvr_cron \
+| at now \
+#
+

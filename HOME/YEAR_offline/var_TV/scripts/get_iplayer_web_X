@@ -1,0 +1,5 @@
+set -x
+
+xterm -e \
+./get_iplayer_web \
+&

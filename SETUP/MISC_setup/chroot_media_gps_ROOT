@@ -1,0 +1,4 @@
+set -x
+echo in to  chroot
+sudo chroot /media/gps/ROOT/. /bin/bash
+echo out of chroot

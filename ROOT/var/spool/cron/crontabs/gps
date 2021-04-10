@@ -1,0 +1,6 @@
+# Edit this file to introduce tasks to be run by cron.
+# 
+# m h  dom mon dow   command
+10,30,50 23,0-18  * * * /home/gps/YEAR/var_TV/scripts/get_iplayer_pvr_cron
+30 20,21,22  * * * /home/gps/YEAR/var_TV/scripts/get_iplayer_pvr_cron
+# 30 11  1,15 * * /home/gps/YEAR/FTP_YEAR_CVS/get_stuff_yes.cron

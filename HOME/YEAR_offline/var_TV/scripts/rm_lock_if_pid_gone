@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# this was OK
+# then it was full of non-interactive interaction
+# so now what ...
+
+testing()
+{
+	: echo "$@"
+}
+
+lock_file_default="$HOME/.get_iplayer/pvr_lock"
+lock_file="${1:-${lock_file_default}}"
+
+# if testing - create file to test its removal ?
+if [ ! -f "$lock_file" ]
+then
+	echo >&2 "## OK ABSENT LOCKFILE ## $lock_file"
+	testing ask_do touch $lock_file
+	exit 1
+fi
+
+# obtain the locking PID from the lockfile
+lock_pid="${2:-$(cat $lock_file)}"
+echo lock_pid "'$lock_pid'"
+if [ -z "$lock_pid" ] 
+then
+	echo "empty string so remove end exit"
+	rm $lock_file
+	exit 1
+fi
+
+# if the PID is still running
+ps -p "$lock_pid"
+t=$?
+echo "ps returned $t"
+# if [ $t == 0 ]
+
+if ps -p "$lock_pid"
+then
+	echo "ps returned PASS - so DONT remove lockfile"
+else
+	echo "ps returned FAIL - so DO remove lockfile"
+	rm "$lock_file"
+fi
+
+	
+

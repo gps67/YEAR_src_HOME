@@ -1,0 +1,39 @@
+#! /bin/bash
+
+# run from cron -e exits on first error (false) +e stays
+set +e
+
+VAR_TV=/var/TV
+scripts=$VAR_TV/scripts
+. $VAR_TV/.env_var_TV
+(
+	date
+	pwd
+
+ # check the lock file has an oner
+
+	pvr_lock_check_and_remove 
+	if [ -f $LK1 ] 
+	then
+		echo "# EXIT $LK1" 
+		exit
+	fi
+
+ # fetch the index of available files
+
+ false && \
+	get_iplayer \
+	--refresh \
+	#
+
+ # fetcg the files
+
+	get_iplayer \
+	--pvr \
+	#
+
+	date
+
+) 2>&1 | tee -a $LOG1
+
+	# --metadata-only \
