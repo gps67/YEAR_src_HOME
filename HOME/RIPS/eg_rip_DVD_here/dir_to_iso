@@ -1,0 +1,50 @@
+#!/bin/bash
+
+. fns_FAIL
+. fns_EDIT
+. fns_DIRS
+
+echo
+echo "# SPACE AVAIL #"
+df -m .
+echo
+
+dvd_name_2="$1"
+
+if :
+then
+	echo dvd_name $dvd_name
+	echo dvd_name_2 $dvd_name_2
+fi
+
+IMG_DIR=iso
+LOG_DIR=tmp
+DEL_DIR=done_del
+
+mkdir_FAIL $IMG_DIR
+mkdir_FAIL $LOG_DIR
+mkdir_FAIL $DEL_DIR
+
+IMG_OUT="${IMG_DIR}/${dvd_name_2}.iso"
+IMG_OUT_tmp="${IMG_OUT}_tmp"
+IMG_LOG="${LOG_DIR}/${dvd_name_2}_mkiso_log.tmp"
+echo
+
+set -x
+if mkisofs -dvd-video -o "${IMG_OUT_tmp}" "${dvd_name_2}" 2>&1 | tee $IMG_LOG
+then
+	mv "$IMG_OUT_tmp" "$IMG_OUT" # ISO file = iso/ keep
+	mv "$dvd_name_2" "$DEL_DIR" # DVD files = done_del
+	sync
+else
+	set +x
+	FAIL $? "mkisofs failed"
+fi
+set +x
+
+echo
+echo "# SPACE REMAIN #"
+df -m .
+echo
+
+sync

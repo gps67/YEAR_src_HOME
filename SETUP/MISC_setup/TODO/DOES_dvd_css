@@ -1,0 +1,11 @@
+
+echo "
+	libdvdcss
+	libdvdcss-dev
+	libdvdcss2
+	dvdcss
+"
+ask_do sudo apt install libdvd-pkg
+ask_do sudo dpkg-reconfigure libdvd-pkg
+ask_do sudo apt install vobcopy
+ask_do locate dvdcss

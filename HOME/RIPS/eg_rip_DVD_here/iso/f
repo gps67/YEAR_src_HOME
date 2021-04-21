@@ -1,0 +1,5 @@
+DST=/home/gps/YEAR/G/RIPS/eg_rip_DVD_here/iso_/
+set -x
+df -H $DST
+mv *.iso $DST
+# find . | cpio -pvdm $DST

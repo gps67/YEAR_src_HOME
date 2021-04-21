@@ -1,0 +1,11 @@
+
+H=nas1
+U=root
+
+. fns_EDIT
+fn_EDIT_var H
+fn_EDIT_var U
+
+ask_do ssh-copy-id $U@$H
+ask_do ssh -Y $U@$H
+
