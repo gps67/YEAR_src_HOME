@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=L
+Comment=
+Exec=L
+Icon=
+Path=~/YEAR/
+Terminal=false
+StartupNotify=false

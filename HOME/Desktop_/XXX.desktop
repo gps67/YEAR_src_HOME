@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=XXX
+Comment=
+Exec=/home/gps/bin/bin_one/xxx
+Icon=
+Path=
+Terminal=false
+StartupNotify=false
