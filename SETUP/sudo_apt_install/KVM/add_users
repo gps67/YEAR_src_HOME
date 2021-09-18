@@ -1,0 +1,13 @@
+# https://help.ubuntu.com/community/KVM/Installation
+
+ask_do virsh list --all
+
+## OLD not 20
+## ask_do \
+## sudo apt install libvert-bin
+
+ask_do \
+sudo adduser `id -un` libvirt
+
+ask_do \
+sudo adduser `id -un` libvirtd

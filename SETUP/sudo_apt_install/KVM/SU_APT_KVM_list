@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# https://developer.android.com/studio/run/emulator-acceleration?utm_source=android-studio#vm-linux
+
+	ask_do sudo apt install \
+	qemu-kvm bridge-utils 
+
+	# ABSENT ia32-libs-multiarch
+
+	# ABSENT ubuntu-vm-builder
+	# ABSENT libvirt-bin 
