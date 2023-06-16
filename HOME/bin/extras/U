@@ -1,3 +1,5 @@
+# ask_do sudo apt-get --with-new-pkgs upgrade
+echo "# for SYSTEM UPGRADE run # update-manager -c # "
 
 if [ -f /var/run/reboot-required ]; then
         cat /var/run/reboot-required

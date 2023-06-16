@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if app=`expr match "$0" '.*/sudo_apt_install_\(.*\)'`
+then
+	# echo "yes match on $0"
+	# squinty underline SPACE
+	ask_do sudo apt install $app
+else
+	echo "no match on $0"
+fi
+
