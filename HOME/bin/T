@@ -20,7 +20,7 @@ HH=45
 FONTS="-fa Monospace -fs 14"
 # ssh from elsewhere # use smaller HH 
 [ -z "$SSH_CLIENT" ] || HH=35
-set -x
+#set -x
 # did want a P_R_T_C
 xterm  $FGBG $FONTS -geometry ${WW}x${HH} -e "${@:-bash}" &
 sleep 2
