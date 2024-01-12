@@ -1,0 +1,28 @@
+#!/bin/bash
+
+. fns_FAIL
+. fns_EDIT
+. fns_DIRS
+
+NFS_DIR_ONE=NAS3_b2_DVDS_2021 # callers symb link to a place on NFS
+
+# NFS_DIR_ONE=/nfs/NAS2/a2
+# NFS_DIR_TWO=/nfs/NAS3/a2
+
+# call should have a dir like NAS3_b2_DVDS_2021 => /nfs/NAS3/b3/keep/DVDS/2021
+# and pass that NAS3_b2_DVDS_2021 as the parameter
+
+NAS_DIR=${1:-$NFS_DIR_ONE}
+
+NAS_SCRIPT=/nfs/NAS_mount_ALL
+
+if [ -d "${NAS_DIR}/." ]
+then
+	echo "# OK # $NAS_DIR"
+else
+	echo "NAS_DIR '$NAS_DIR' needs to be a dir, ie mounted"
+	ask_do $NAS_SCRIPT
+
+	[ -d "${NAS_DIR}/." ] || FAIL 6 "Still not mounted"
+fi
+

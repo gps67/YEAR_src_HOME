@@ -51,6 +51,13 @@ gen_export_line()
 	echo "$dir 192.168.0.0/16(rw,async,no_subtree_check,no_root_squash)"
 }
 
+make_box_dir()
+{
+	[ -d $M0 ] || ask_do mkdir $M0
+	ask_do ln -s mnt/HD/HD_a2/ $M0/a2
+	ask_do ln -s mnt/HD/HD_b2/ $M0/b2
+}
+
 mount_box_dir()
 {
 	local box=$1
@@ -60,7 +67,7 @@ mount_box_dir()
 	is_mounted $box $dir && return
 
 	local M0=/nfs/$box
-	[ -d $M0 ] || ask_do mkdir $M0
+	[ -d $M0 ] || make_box_dir $M0
 	[ -d $M0 ] || return
 	local M=/nfs/$box$dir
 	local N=$box:$dir
