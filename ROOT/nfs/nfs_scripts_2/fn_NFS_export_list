@@ -26,6 +26,11 @@ get_NFS_export_list()
 	/mnt/HD/HD_b2
   "
 
+  ;;	NAS5) LIST1="
+	/mnt/HD/HD_a2
+	/mnt/HD/HD_b2
+  "
+
   ;;	TVPC) LIST1="
 	/
 	/media/hda1

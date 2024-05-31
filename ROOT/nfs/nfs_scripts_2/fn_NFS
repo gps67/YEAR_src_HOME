@@ -77,7 +77,7 @@ mount_box_dir()
 	OPTS="$OPTS,suid"
 #	OPTS="$OPTS,user" # problems with noexec
 #	OPTS="$OPTS,proto=udp" # STOPPED WORKING JAN 2021
-	OPTS="$OPTS,intr"
+#	OPTS="$OPTS,intr" # syslog says deprecated
 	OPTS="$OPTS,exec"
 	OPTS="$OPTS,nolock"
 #	OPTS="$OPTS,nfsvers=2"	# problems with 31bit file size ?
