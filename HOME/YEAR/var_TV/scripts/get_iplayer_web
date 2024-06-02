@@ -9,6 +9,7 @@ cd /var/TV/
 cd $VAR_TV/PVR/
 PATH=/var/TV/:$VAR_TV/get_iplayer:$PATH
 
+T  \
 get_iplayer.cgi \
 -g $VAR_TV/get_iplayer/get_iplayer \
 -p 1935 \

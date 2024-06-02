@@ -1,0 +1,68 @@
+#!/bin/bash
+
+# run from cron needs +e
+# -e exits on first error (retval false) +e stays
+set +e
+
+#	echo "# $0 # $@"
+
+. /var/TV/.env_var_TV
+# that set VAR_TV=/var/TV
+# that did a cd ~/G/PVR/
+
+. fns_DIRS
+
+SUB=G_to_NAS
+SUB=G_is_TMP
+
+dir_must_exist $SUB
+
+yes_no "# MOVE all files to subdirs" || exit
+
+(
+	date
+	pwd
+	# NO # for d in "SERIES PROGS"
+	for d in SERIES PROGS
+	do
+		mkdir_FAIL $SUB/$d
+		# [ -d $d ] || mkdir $d
+	done
+
+	for fullname in *Series*_-_*
+	do
+		[ -f "$fullname" ] || continue
+		if f=`expr match "$fullname" '\(.*_Series_.*\)_-_...'`
+		then
+			d=$SUB/SERIES/$f
+			mkdir_FAIL $d
+			echo "# OK # $f # $fullname"
+			mv "$fullname" "$d"
+		else
+			echo "# FAIL # - # $fullname"
+		fi
+	done
+
+	for fullname in *_-_*
+	do
+		[ -f "$fullname" ] || continue
+		if f=`expr match "$fullname" '\(.*\)_-_...'`
+		then
+			d=$SUB/PROGS/$f
+			echo "# OK # $f # $fullname"
+			mkdir_FAIL $d
+			mv "$fullname" "$d"
+		else
+			echo "# FAIL # - # $fullname"
+		fi
+	done
+
+ # check the lock file has an oner
+
+
+ echo "# PWD # `pwd`"
+ echo "# SUB # $SUB"
+ echo "# DIR # $d"
+) 2>&1 | tee -a $LOG1.list.txt
+
+	# --metadata-only \
