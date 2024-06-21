@@ -31,6 +31,15 @@ get_NFS_export_list()
 	/mnt/HD/HD_b2
   "
 
+  ;;	x79) LIST1="
+	/
+	/home
+	/mnt/sda2
+	/mnt/sdb2
+	/mnt/sda4
+	/mnt/sdb4
+  "
+
   ;;	TVPC) LIST1="
 	/
 	/media/hda1

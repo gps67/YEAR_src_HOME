@@ -95,6 +95,45 @@ mount_box_dir()
 	fi
 }
 
+mount_box_ROOT()
+{
+	local box=$1
+#	local dir=$2
+	local dir=/
+	local dir_ROOT=/ROOT
+
+#	is_mounted $box $dir && echo "## already MOUNTED ## $box $dir"
+#	is_mounted $box $dir && return
+
+	local M0=/nfs/$box
+	[ -d $M0 ] || make_box_dir $M0
+	[ -d $M0 ] || return
+	local M=/nfs/$box$dir_ROOT
+	local N=$box:$dir
+	[ -d $M ] || ask_do mkdir -p $M
+	OPTS="soft"
+	OPTS="$OPTS,noauto"
+	OPTS="$OPTS,suid"
+#	OPTS="$OPTS,user" # problems with noexec
+#	OPTS="$OPTS,proto=udp" # STOPPED WORKING JAN 2021
+#	OPTS="$OPTS,intr" # syslog says deprecated
+	OPTS="$OPTS,exec"
+	OPTS="$OPTS,nolock"
+#	OPTS="$OPTS,nfsvers=2"	# problems with 31bit file size ?
+	OPTS="$OPTS,nfsvers=3"
+#
+	pings_box $box
+#	ask_do \
+	if say_do \
+	mount $N $M -o "$OPTS"
+#	mount $N $M -o user,noauto,suid,soft,proto=udp,intr,exec,nolock,nfsvers=2
+	then
+		:
+	else
+		echo ask_do "mount $M failed - thow a fit"
+	fi
+}
+
 umount_box_dir()
 {
 	local box=$1

@@ -5,11 +5,11 @@
 if false : true
 then
 	:
-	say_do mount_box_all NAS3
 	say_do mount_box_all NAS5
 else
 	say_do mount_box_all NAS1
 	say_do mount_box_all NAS2
+	say_do mount_box_all NAS3
 	say_do mount_box_all NAS4
 fi
 # say_do mount_box_all D630
