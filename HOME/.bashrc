@@ -119,14 +119,5 @@ if ! shopt -oq posix; then
 fi
 
 set +e
-. ~/bin/fns_VARS
-var_add PATH \
-	$HOME/bin	\
-	$HOME/bin/bin_one	\
-	$HOME/bin_LGX	\
-	$HOME/bin_NFS	\
-	$HOME/bin_NFS_down	\
-	/tools/CTXT/tcl/bin \
-	/tools/CTXT/py/bin \
 #
 . ~/.bashrc_gps

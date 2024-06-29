@@ -3,4 +3,5 @@
 
 . fns_DATE
 fn_DATE_use_VARS
-echo "${DATE_year_mm_dd} ${DATE_Jan} ${DATE_Tue} ${TIME_HH}:${TIME_MM}" "$@"
+# echo "${DATE_year_mm_dd} ${DATE_Jan} ${DATE_Tue} ${TIME_HH}:${TIME_MM}" "$@"
+echo "${DATE_year_mm_dd} ${DATE_Jan} ${DATE_Tue} ${TIME_HH}:${TIME_MM} # ${TIME_SS} # " "$@"

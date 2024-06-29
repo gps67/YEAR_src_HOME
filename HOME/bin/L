@@ -16,6 +16,14 @@ D1=/home/athome/G/ftp_2010_
 D1=/media/X3/2011/src/libs_apps
 D1=/home/gps/YEAR/src/PLAY/libs_apps
 
+echo DISPLAY was $DISPLAY
+# export DISPLAY=${DISPLAY:-localhost:10.0}
+
+is_root()
+{
+	id | grep root > /dev/null
+}
+
 # actually $YYYY/ might be better, but 2020 does exist on JAN 1st
 if [ ! -d $HOME/2020/ ]
 then
@@ -35,7 +43,7 @@ fi
 
 	fi
 
-if id | grep root >/dev/null
+if is_root
 then
 	D1=/home/gps/YEAR/ADMIN
 fi
@@ -65,19 +73,34 @@ echo "## D2 ## $D2"
 
 cd 
 
-get_auth()
+# Authorization required, but no authorization protocol specified
+# working fine until a root L happens
+# then that sets the auth for root, but at the expense of user1
+#
+## then this:
+## xauth:
+##  /run/user/1000/.mutter-Xwaylandauth.CTVOP2
+##  not writable, changes will be ignored
+## the run as root did the chown
+
+set_auth()
 {
- echo \
+echo set_auth ... echo $DISPLAY
+  # echo \
 	xauth add $(xauth -f ~gps/.Xauthority list | tail -1)
+	chown gps /run/user/1016/.mutter-Xwaylandauth.*
 }
 
+# set_auth
+
 FGBG="-fg black -bg white" # RASH multiword
-id | grep root && FGBG="-fg green -bg black" # RASH multiword
-id | grep root && get_auth
+is_root && FGBG="-fg green -bg black" # RASH multiword
+is_root && set_auth
 # when xterm gets HUGE font - 51 lines on screen under xfce
 WW=80
 HH=51
 HH=45
+HH=43
 FONTS="-fa Monospace -fs 14"
 # ssh from elsewhere # use smaller HH 
 [ -z "$SSH_CLIENT" ] || HH=35

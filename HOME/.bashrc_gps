@@ -1,31 +1,50 @@
 
+# db user borrows this file
 
-. $HOME/bin/fns_VARS
+HOME_gps=/home/gps
+. $HOME_gps/bin/fns_VARS
 # fns_VARS
 # var_add var_pfx
 # uses ~/bin_LGX/PATH_TOOL
 
 # THIS IS NAFF # look at -rpath during build
-var_add LD_LIBRARY_PATH \
-	/tools/CTXT/py/lib \
+# var_add LD_LIBRARY_PATH \
+# 	/tools/CTXT/py/lib \
+# 	/tools/x86_64/py/lib \
 #
 
 # actually built stuff, overrides system defaults
+#	/tools/x86_64/py/bin \
+#	/tools/CTXT/py/bin \
+#
+tools_2000=/tools/x86_64
 var_pfx PATH \
-	$HOME/prefix/bin \
-	/tools/CTXT/py/bin \
-	/tools/CTXT/tcl/bin \
-	/tools/CTXT/util/bin \
+	$HOME_gps/prefix/bin \
+	$tools_2000/tcl/bin \
+	$tools_2000/libr/bin \
+	$tools_2000/util/bin \
+	$tools_2000/py/bin \
+#
+#	/tools/CTXT/tcl/bin \
+#	/tools/CTXT/util/bin \
 #
 var_add PATH \
-	$HOME/bin	\
-	$HOME/bin_NFS	\
-	$HOME/bin/bin_one	\
-	$HOME/bin/bin_two	\
-	$HOME/bin_LGX	\
-	$HOME/bin_NFS_down	\
+	$HOME_gps/bin	\
+	$HOME_gps/bin_NFS	\
+	$HOME_gps/bin/bin_one	\
+	$HOME_gps/bin/bin_two	\
+	$HOME_gps/bin_LGX	\
+	$HOME_gps/bin_NFS_down	\
+	$HOME_gps/G/prefix/bin	\
+	$HOME_gps/G/prefix/node/bin	\
+	$HOME_gps/G/prefix/gprc/bin	\
 #
-# var_add PATH $HOME/bin2
+# var_add PATH $HOME_gps/bin2
+
+var_add PKG_CONFIG_PATH \
+	$HOME_gps/G/prefix/lib/pkgconfig \
+	$HOME_gps/G/prefix/gprc/lib/pkgconfig \
+#
 
 # new scripts go to bin_NFS
 # but do remember to update (git?) and remain independent of NFS
@@ -33,8 +52,8 @@ var_add PATH \
 # strange errors when . not searched, and best early, eg cd src
 
 var_pfx CDPATH :
-var_add CDPATH $HOME/YEAR
-var_add CDPATH $HOME/YEAR/src
+var_add CDPATH $HOME_gps/YEAR
+var_add CDPATH $HOME_gps/YEAR/src
 
 # perl5 now unused
 
