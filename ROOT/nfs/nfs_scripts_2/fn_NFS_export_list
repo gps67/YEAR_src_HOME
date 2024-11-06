@@ -6,9 +6,14 @@ get_NFS_export_list()
   local LIST1="NOSUCHDIRLIST"
   case "$box"
   in	xx) :
-  ;;	NAS1) LIST1="
+  ;;	old_NAS1) LIST1="
 	/mnt/HD/HD_a2
 	/mnt/HD/HD_b2
+  "
+
+  ;;	NAS1) LIST1="
+	/mnt/sda2
+	/mnt/sdb2
   "
 
   ;;	NAS2) LIST1="

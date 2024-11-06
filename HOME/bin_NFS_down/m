@@ -1,0 +1,54 @@
+#!/bin/bash
+# set -x
+runs() {
+	echo "# runs # $*"
+	# ask_do "$@"
+	"$@" &
+}
+run_fg() {
+	echo "# run_fg # $*"
+	# ask_do "$@"
+	"$@" 
+}
+gm_display() {
+	runs eog "$*"
+#	runs gm display "$*"
+}
+
+shopt -s extglob
+# @() one
+# !() not
+# +() one plus
+# *() any star
+# ?() opt one
+# @(one|two|three)
+
+for arg in "$@"
+do
+  case "$arg"
+  in
+  	xxx)
+  ;;	*.txt) runs xless "$arg"
+  ;;	*.ps|*.PS) runs mupdf-gl "$arg"
+  ;;	*.pdf|*.PDF) runs mupdf-gl "$arg"
+  ;;	*.jpeg|*.jpg|*.png|*.gif|*.JPG|*.PNG|*.webp) gm_display "$arg"
+  ;;	*.bpg) gm_display "$arg"
+  ;;	*.mp4) runs v "$arg"
+  ;;	*.mp4) runs v "$arg"
+  ;;	*.wav) run_fg play "$arg"
+  ;;	*.mp3) runs T mpg123 "$arg"
+  ;;	*.chm) runs xchm "$arg"
+  ;;	*.tiff) runs eog "$arg"
+  ;;	*.svg) runs inkview "$arg"
+  ;;	*.@(1|2|3|4|5|6|7|8|n|man|3x).gz) 
+  		zcat "$arg" | groff -c -Tlatin1 -mandoc |less -R #| pager # more # less
+  ;;	*.@(1|2|3|4|5|6|7|8|n|man|3x).in) 
+  		groff -c -Tlatin1 -mandoc "$arg" |less -R #| pager # more # less
+  ;;	*.1 | *.2 | *.3 | *.4 | *.5 | *.6 | *.7 | *.8 | *.n | *.man | *.3x )
+  		groff -c -Tlatin1 -mandoc "$arg" |less -R #| pager # more # less
+  ;;	*.md)
+		pandoc -f markdown -w html5 "$arg" | lynx -stdin
+  ;;	*)
+  		echo "# FAIL # $arg"
+  esac
+done

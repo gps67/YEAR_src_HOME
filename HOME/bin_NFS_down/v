@@ -1,0 +1,98 @@
+# this failed with Q1 in filename
+# unterminated quoted string # sh ?
+ nawk -v vid="$1" '
+
+ 	function Q1(str) {
+	 return sprintf("%c%s%c", 39,  str, 39 )
+	}
+
+	BEGIN {
+	  # start vlc as a bg process
+	  # could actually get and use PID ??
+	  # cmd_vid = "vlc --video-on-top " Q1(vid)
+	  cmd_vid = "vlc -I http --http-password VLC --video-on-top " Q1(vid)
+	  cmd_vid = "vlc --video-on-top " Q1(vid)
+	  print   cmd_vid
+	  print | cmd_vid
+	  # not closing cmd keeps it open
+	  # exit waits for all pipes !
+
+	  # it takes a while for vlc to post the window
+	  # and this script cant support multiple vlc s
+	  sleep_1()
+	  sleep_1()
+	  sleep_1()
+	  scan_wm_list()
+
+	  sleep_1()
+	  sleep_1()
+	  scan_wm_list()
+
+	  sleep_1()
+	  sleep_1()
+	  sleep_1()
+	  scan_wm_list()
+
+	  sleep_1()
+	  sleep_1()
+	  sleep_1()
+	  sleep_1()
+	  scan_wm_list()
+
+	  sleep_1()
+	  sleep_1()
+	  sleep_1()
+	  sleep_1()
+	  sleep_1()
+	  sleep_1()
+	  scan_wm_list()
+
+	  exit(6)
+	}
+
+	function sleep_1(cmd_local) {
+	  cmd_local = "sleep 1"
+	  print cmd_local
+	  print | cmd_local
+	  close(cmd_local)
+	}
+
+	function scan_wm_list(cmd_local) {
+	  cmd_local = "wmctrl -l -x"
+	  print cmd_local
+	  while(( cmd_local | getline ) > 0 ) {
+	    # print "## LINE ## " $0
+	    if(( $3=="vlc.vlc" ) || ( $3=="vlc.Vlc" )) {
+		# ok found what is probably it (singleton)
+	        close(cmd_local)
+		resize_wid($1)
+		# i think vlc resizes after posting window
+		sleep_1()
+	  sleep_1()
+	  sleep_1()
+	  sleep_1()
+	  sleep_1()
+	  sleep_1()
+		resize_wid($1)
+		exit
+	    }
+	  }
+	  close(cmd_local)
+	}
+
+	function resize_wid(wid, cmd_local) {
+		g=0
+		x=0
+		x=876
+		y=180
+		w=489
+		h=350
+
+		cmd_local = sprintf( "wmctrl -i -r %s -e %d,%d,%d,%d,%d ", wid,g,x,y,w,h )
+		print cmd_local
+		print "" | cmd_local
+		close(cmd_local)
+	}
+
+ '
+

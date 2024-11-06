@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# this opens a small xterm locally that runs ssh to the remote system
+# you then run something in that, which opens a big window
+
+WH="-geometry 40x8"
+xterm $WH -e ssh -Y -l gps "${1:-M7}" &
