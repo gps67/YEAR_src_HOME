@@ -45,6 +45,11 @@ get_NFS_export_list()
 	/mnt/sdb4
   "
 
+  ;;	dws|dws1) LIST1="
+	/
+	/home
+  "
+
   ;;	TVPC) LIST1="
 	/
 	/media/hda1
@@ -74,7 +79,9 @@ get_NFS_export_list()
 	/media/X3B
 	/media/X3
   "
-  ;;	*) : 
+  ;;	*) : LIST1="
+  	/
+  "
   ;;
   esac
   NFS_export_list="$LIST1"

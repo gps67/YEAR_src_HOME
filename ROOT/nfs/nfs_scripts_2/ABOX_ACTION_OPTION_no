@@ -1,0 +1,74 @@
+#! /usr/bin/bash
+# ./BOX_mount dws_one
+
+# ABOX_ACTION_OPTION
+# ABOX_ACTION
+
+function STR_LOOKUP_ADD {
+	local VAR_NAME="$1"
+	shift
+	for word in "$@"
+	do
+		eval local OLD_VAL="\$$VAR_NAME"
+		OLD_VAL="${OLD_VAL}."
+		     local ADD_VAR="$word"
+		eval local ADD_VAL="\$$ADD_VAR"
+		     local NEW_VAL="${OLD_VAL}${ADD_VAL}"
+		eval       \$$VAR_NAME="\'$NEW_VAL\'"
+		echo "STR_LOOKUP_ADD $VAR_NAME $word "
+		echo "OLD_VAL ${OLD_VAL}"
+		echo "ADD_VAR ${ADD_VAR}"
+		echo "ADD_VAL ${ADD_VAL}"
+		echo "NEW_VAL ${NEW_VAL}"
+		echo "VAR_NAME $VAR_NAME "
+		eval echo "$VAR_NAME \$$VAR_NAME "
+	done
+
+ eval	$VAR_NAME="${OLD_VAL}${ADD_VAL}"
+
+
+}
+
+	CH1='[a-zA-Z0-9]' # CSET_CIDENT_1970 # sublex of multi _ part _ word
+	ASCII_UNDERLINE="_"
+	SUBLEX="${CH1}*"
+
+if : false
+then
+#	RE_DOLLAR='$'
+	RE_START_COLLECT='\('
+	RE_STOP_COLLECT='\)'
+	RE_END_COLLECT="${RE_STOP_COLLECT}"
+fi
+
+	STR_LOOKUP_ADD PATTERN1 RE_START_COLLECT
+	STR_LOOKUP_ADD PATTERN1 SUBLEX
+	STR_LOOKUP_ADD PATTERN1 ASCII_UNDERLINE
+	STR_LOOKUP_ADD PATTERN1 SUBLEX
+	STR_LOOKUP_ADD PATTERN1 RE_DOLLAR
+	STR_LOOKUP_ADD PATTERN1 RE_END_COLLECT
+
+
+
+
+	PATTERN_1="${RE_START_COLLECT}${SUBLEX}${ASCII_UNDERLINE}${SUBLEX}${RE_DOLLAR}${RE_END_COLLECT}"
+	PATTERN="${PATTERN1}"
+	# MERGE ARGV into RE_STEPS # lookup RE_START_COLLECT and SCRIPT at XPOS
+	# SCRIPT_at_XPOS is GEN writing stuff
+	TEXT="dws_one_mount"
+	TEXT="$0"
+	TEXT=`basename $0`
+	TEXT='ONE_TWO'
+	echo "TEXT ${TEXT}"
+	echo "PATTERN ${PATTERN}"
+	if MATCH=`expr match "${TEXT}" "${PATTERN}" `
+	then
+	#	 ABOX_ACTION
+		:
+		echo "MATCH ${MATCH}"
+	else
+	#	 ABOX_ACTION_OPTION
+		:
+		echo "MATCH ${MATCH}"
+		# echo "MATCH '${MATCH}'"
+	fi

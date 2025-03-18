@@ -10,8 +10,10 @@ else
 	say_do mount_box_all NAS2
 	say_do mount_box_all NAS3
 	say_do mount_box_all NAS4
-	say_do mount_box_all X79
-	say_do mount_box_all NAS1
+	echo "# currently offline for rebuild and tests and TODO DIAG"
+	ask_do mount_box_all NAS1
+	ask_do mount_box_all X79
+	ask_do mount_box_all dws1
 fi
 # say_do mount_box_all D630
 	mount_t_nfs

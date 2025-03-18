@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# set -x
+
+. fns_FAIL
+
+name=$0
+name=`basename $name`
+
+mid=""
+rhs="rhs"
+
+if lhs=$(expr match "$name" '\(.*\)_.*_.*') 
+then
+	lhs=$(expr match "$name" '\(.*\)_.*_.*') || FAIL 1 nomatch
+	mid=$(expr match "$name" '.*_\(.*\)_.*') || FAIL 1 nomatch
+	rhs=$(expr match "$name" '.*_.*_\(.*\)') || FAIL 1 nomatch
+
+	WARN expected three of 2
+	ask_do ./BOX_$rhs $lhs 
+	ask_do $lhs $mid $rhs
+else
+
+	lhs=$(expr match "$name" '\(.*\)_.*') || FAIL 1 nomatch
+	rhs=$(expr match "$name" '.*_\(.*\)') || FAIL 1 nomatch
+	ask_do ./BOX_$rhs $lhs 
+
+fi
+
