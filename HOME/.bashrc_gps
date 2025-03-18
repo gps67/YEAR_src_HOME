@@ -2,6 +2,7 @@
 # db user borrows this file
 
 HOME_gps=/home/gps
+HOME_gps=$HOME
 . $HOME_gps/bin/fns_VARS
 # fns_VARS
 # var_add var_pfx
