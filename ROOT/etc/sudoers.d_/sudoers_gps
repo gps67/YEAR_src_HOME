@@ -1,0 +1,7 @@
+
+# ubuntu puts first user into group sudo
+# Members of the group may gain root privileges
+%sudo ALL=(ALL) NOPASSWD: ALL
+# gps ALL=(ALL) NOPASSWD: ALL
+
+
