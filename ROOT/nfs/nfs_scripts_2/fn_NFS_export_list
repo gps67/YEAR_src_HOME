@@ -45,7 +45,12 @@ get_NFS_export_list()
 	/mnt/sdb4
   "
 
-  ;;	dws|dws1) LIST1="
+  ;;	laptop1) LIST1="
+	/
+	/home
+  "
+
+  ;;	dws|dws1|dws330) LIST1="
 	/
 	/home
   "
