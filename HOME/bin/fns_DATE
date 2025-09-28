@@ -96,12 +96,13 @@ fn_DATE_set_DATE_STAMP_VAL() {
 
 fn_DATE_zap_STAMP()
 {
+	# echo >&2 fn_DATE_zap_STAMP 
 	unset DATE_STAMP_VAL DATE_STAMP
 }
 
 fn_DATE_set_STAMP_yesterday()
 {
-	fn_DATE_zap_STAMP
+	# fn_DATE_zap_STAMP
 	fn_DATE_get_STAMP -d yesterday
 }
 
@@ -196,11 +197,12 @@ fn_DATE_use_VARS()
 #
 # fn_DATE_use_VARS "$@"
 #
+fn_DATE_zap_STAMP
 fn_DATE_use_VARS 
 
 # fn_DATE_get_VARS yesterday
 # fn_DATE_get_VARS 
-# fn_DATE_get_VARS now
+fn_DATE_get_VARS now
 
 # name=name
 # year_mm_dd="${DATE_YEAR}-${DATE_MM}-${DATE_DD}"

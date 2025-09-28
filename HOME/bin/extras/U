@@ -13,6 +13,7 @@ sudo apt upgrade -y
 sudo apt autoremove -y
 sudo apt autoclean
 
+date
 
 # /etc/update-motd.d/
 # 98-reboot-required

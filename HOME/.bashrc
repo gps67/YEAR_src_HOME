@@ -121,3 +121,4 @@ fi
 set +e
 #
 . ~/.bashrc_gps
+. "$HOME/.cargo/env"

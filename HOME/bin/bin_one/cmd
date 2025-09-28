@@ -4,13 +4,17 @@ f0=/root/bin/"$1"
 f0=~gps/bin/"$1"
 f0=$HOME/bin/"$1"
 f0=$HOME/bin_NFS/"$1"
+x=`type -p "$1"` || echo "# type -p $1 failed #"
 f=`type -p "$1"` || f="$f0"
 if file "$f" | grep -q ELF
 then
 	f="$f0"
 fi
-[ -f $f ] || f="$f0"
+[ -f "$f" ] || f="$f0"
 ################################################
+echo "f0 is $f0"
+echo "f is $f"
+# ask_do \
 vi $f
 ################################################
 

@@ -29,6 +29,7 @@ do
   in
   	xxx)
   ;;	*.txt) runs xless "$arg"
+  ;;	*.info) runs T info -f  "$arg"
   ;;	*.ps|*.PS) runs mupdf-gl "$arg"
   ;;	*.pdf|*.PDF) runs mupdf-gl "$arg"
   ;;	*.jpeg|*.jpg|*.png|*.gif|*.JPG|*.PNG|*.webp) gm_display "$arg"
@@ -46,8 +47,12 @@ do
   		groff -c -Tlatin1 -mandoc "$arg" |less -R #| pager # more # less
   ;;	*.1 | *.2 | *.3 | *.4 | *.5 | *.6 | *.7 | *.8 | *.n | *.man | *.3x )
   		groff -c -Tlatin1 -mandoc "$arg" |less -R #| pager # more # less
+  ;;	*.1* | *.2* | *.3* | *.4* | *.5* | *.6* | *.7* | *.8* | *.n* | *.man | *.3x )
+  		groff -c -Tlatin1 -mandoc "$arg" |less -R #| pager # more # less
   ;;	*.md)
 		pandoc -f markdown -w html5 "$arg" | lynx -stdin
+  ;;	*.sqlite)
+		sqlite3 "$arg" .dump | less
   ;;	*)
   		echo "# FAIL # $arg"
   esac

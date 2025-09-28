@@ -2,7 +2,6 @@
 # db user borrows this file
 
 HOME_gps=/home/gps
-HOME_gps=$HOME
 . $HOME_gps/bin/fns_VARS
 # fns_VARS
 # var_add var_pfx
@@ -20,7 +19,8 @@ HOME_gps=$HOME
 #
 tools_2000=/tools/x86_64
 var_pfx PATH \
-	$HOME_gps/prefix/bin \
+	$HOME_gps/prefix/bin 	\
+	$HOME/.cargo/bin	\
 	$tools_2000/tcl/bin \
 	$tools_2000/libr/bin \
 	$tools_2000/util/bin \
@@ -39,6 +39,9 @@ var_add PATH \
 	$HOME_gps/G/prefix/bin	\
 	$HOME_gps/G/prefix/node/bin	\
 	$HOME_gps/G/prefix/gprc/bin	\
+	$HOME_gps/Qt/6.7.0/gcc_64/bin	\
+	$HOME_gps/fpc/bin	\
+	/bin \
 #
 # var_add PATH $HOME_gps/bin2
 

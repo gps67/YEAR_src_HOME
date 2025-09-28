@@ -1,6 +1,8 @@
+cd /
 PATH=$PATH:$HOME/bin
 touch /tmp/get_iPlayer.log 
 chown gps /tmp/get_iPlayer.log 
-xterm  -geometry 180x35 -e slog &
-xterm  -geometry  80x50 -e tail -n 40 -f /tmp/get_iPlayer.log &
+FONTS="-fa Monospace -fs 14"
+xterm  $FONTS -geometry 100x30 -e slog &
+xterm  -geometry  80x35 -e tail -n 40 -f /tmp/get_iPlayer.log &
 sleep 1

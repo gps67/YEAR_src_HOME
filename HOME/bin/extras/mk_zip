@@ -1,0 +1,6 @@
+N=`basename $PWD`
+echo $N
+cd ..
+# -r recursive
+# -u update # silent second time # uses mtime size
+ask_do zip -r -u $N.zip $N

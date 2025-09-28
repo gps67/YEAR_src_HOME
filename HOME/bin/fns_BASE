@@ -46,8 +46,10 @@ fn_BASE_wr()
 
 	[ -f "$BASE_filename" ] || touch "$BASE_filename" 
 	grep -v "^${BASE_varname}[ 	]" "${BASE_filename}" > "${BASE_tempfile}"
-	mv "${BASE_tempfile}" "${BASE_filename}"
-	echo "${BASE_varname} ${BASE_value}" >> "${BASE_filename}"
+	# mv "${BASE_tempfile}" "${BASE_filename}"
+	echo "${BASE_varname} ${BASE_value}" > "${BASE_filename}" \
+	|| FAIL $? $PWD ${BASE_filename} 
+	
 }
 
 fn_BASE_edit()

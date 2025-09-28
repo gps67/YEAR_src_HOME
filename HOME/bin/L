@@ -24,8 +24,7 @@ is_root()
 	id | grep root > /dev/null
 }
 
-# actually $YYYY/ might be better, but 2020 does exist on JAN 1st
-if [ ! -d $HOME/2020/ ]
+if [ ! -d $HOME/YEAR/ ]
 then
 	D1=$HOME/G/nfs/nfs_scripts_2
 fi

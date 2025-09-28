@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /usr/bin/env bash
 # "$@" getting fed to fns_data
 
 . fns_DATE

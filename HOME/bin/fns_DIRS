@@ -86,6 +86,32 @@ cd_mkdir_FAIL() { # api top
 	fi
 }
 
+dir_OK_mkdir_FAIL() {
+	# CALLER wants $1 to be a dir # find it, create it, fail
+	# require $1 # dir = $1
+	if [ $# != 1 ]
+	then
+		fn_WARN 0 "dir_OK_mkdir_FAIL usually takes 1 arg - $*"
+	fi
+	local dir_PREV=$PWD
+	if cd "$1" > /dev/null 2>&1
+	then
+		: # OK # might have used $CDPATH though
+		echo "# dir_OK # $(pwd)" 
+		# cd $dir_PREV
+	else
+		if mkdir "$1" # no ask # no -p #
+		then
+			cd_or_FAIL "$1"
+		else
+			fn_WARN 0 "mkdir '$1'"
+			ask_do mkdir -p "$1"
+			cd_or_FAIL "$1"
+		fi
+	fi
+	cd $dir_PREV
+}
+
 
 OPTHERln_s_tail() {
 	:
