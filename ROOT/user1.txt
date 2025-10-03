@@ -2,4 +2,4 @@
 echo "change 1000 to 1020"
 vi /etc/passwd
 vi /etc/group
-echo chown -R user1.user1 /home/user1
+echo chown -R user1:user1 /home/user1
